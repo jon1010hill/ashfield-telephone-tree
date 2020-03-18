@@ -1,15 +1,24 @@
 {
   "compilerOptions": {
+    "lib": [
+      "es2016",
+      "dom"
+    ],
     "module": "commonjs",
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
     "outDir": "lib",
     "sourceMap": true,
+    "target": "es2016",
+    "moduleResolution": "node",
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
     "strict": true,
-    "target": "es2017"
+    "noUnusedLocals": true,
+    "noEmitOnError": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
   },
-  "compileOnSave": true,
-  "include": [
-    "src"
-  ]
+  "compileOnSave": true
 }
