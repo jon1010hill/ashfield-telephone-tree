@@ -1,9 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es2016",
-      "dom"
-    ],
+    "lib": ["es2016", "dom"],
     "module": "commonjs",
     "outDir": "lib",
     "sourceMap": true,
@@ -19,6 +16,7 @@
     "noUnusedParameters": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "resolveJsonModule": true
   },
   "compileOnSave": true
 }
