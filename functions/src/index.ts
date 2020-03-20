@@ -27,7 +27,20 @@ app.post('/voice', (_req, resp) => {
     // todo action: NO_ANSWER
     // todo we need to handle DialCallStatus
   }
-  twiml.say({voice: pool.voice}, pool.messages.intro) // todo variable substitution
+
+  // todo round robin random select
+  var personDetails = pool.people[0]
+
+  var tvars = {
+    person: personDetails.name,
+    street: pool.street
+  }
+
+  const fillTemplate = function(templateString: string, templateVars: any){
+    return new Function(`return \`${templateString}\`;`).call(templateVars);
+  }
+
+  twiml.say({voice: pool.voice}, fillTemplate(pool.messages.intro, tvars)) // todo variable substitution
 
   twiml.dial(options, pool.people[0].number)
 
