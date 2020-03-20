@@ -21,8 +21,14 @@
     "twilio": "3.40.0"
   },
   "devDependencies": {
+    "@types/chai": "4.2.11",
+    "@types/chai-as-promised": "7.1.2",
     "@types/cors": "2.8.6",
+    "@types/mocha": "7.0.2",
+    "chai": "4.2.0",
+    "chai-as-promised": "7.1.1",
     "firebase-functions-test": "^0.1.6",
+    "mocha": "7.1.1",
     "prettier": "1.19.1",
     "source-map-support": "0.5.16",
     "tsconfig-paths": "3.9.0",
