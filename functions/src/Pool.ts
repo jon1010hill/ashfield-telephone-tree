@@ -40,7 +40,7 @@ export class Pool {
   }
 
   getNextPerson(usedNumbers: string[]): Person | undefined {
-    console.log(`getNextPerson called ${usedNumbers}`)
+    console.log(`getNextPerson called and filter ${usedNumbers}`)
     // todo check usedNumbers exist in pool
     const filtered = this.data.people.filter(
       person => !usedNumbers.includes(person.number)

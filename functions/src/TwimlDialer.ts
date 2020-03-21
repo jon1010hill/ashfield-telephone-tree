@@ -3,6 +3,12 @@ import * as twilio from 'twilio'
 import VoiceResponse = require('twilio/lib/twiml/VoiceResponse')
 import {Person} from './types'
 export class TwimlDialer {
+  screenResponse() {
+    return new twilio.twiml.VoiceResponse().say(
+      {voice: 'woman'},
+      'Hello get ready for your call'
+    )
+  }
   emptyResponse() {
     return new twilio.twiml.VoiceResponse().toString()
   }
@@ -10,12 +16,13 @@ export class TwimlDialer {
     pool: Pool,
     personToDial: Person,
     usedNumbers: string[],
+    calledUrl: string,
     actionUrl?: string
   ): string {
     console.log(`Dial next called ${usedNumbers.length}`)
     const twiml = new twilio.twiml.VoiceResponse()
 
-    const callScreenUrl = '/screen'
+    const callScreenUrl = `${calledUrl}/screen`
     if (!personToDial) {
       console.log('No more people to dial')
       return twiml.toString() // TODO, reached end of pool
@@ -25,7 +32,7 @@ export class TwimlDialer {
       timeout: pool.getRingTimeOut(),
       timeLimit: pool.getMaxCallDuration(),
       action: actionUrl,
-      answerOnBridge: false // todo test this with and without
+      answerOnBridge: true // todo test this with and without
     }
 
     if (usedNumbers.length === 0) {
@@ -43,7 +50,7 @@ export class TwimlDialer {
         // Intro message
         {voice: pool.getVoice() as VoiceResponse.SayVoice},
         pool.getBespokeMessagesForPerson(personToDial).next
-      ) // todo variable substitution
+      )
       twiml.dial(options).number({url: callScreenUrl}, personToDial.number)
     }
     return twiml.toString()
