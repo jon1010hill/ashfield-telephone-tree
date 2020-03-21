@@ -4,7 +4,7 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import {TwimlDialer} from './TwimlDialer'
 import {Pool} from './Pool'
-import {POOL, Person} from './types'
+import {POOL_DATA, Person} from './types'
 import {parseQueryStringToArray, getNextActionUrl, getCurrentUrl} from './util'
 // tslint:disable-next-line: import-name
 
@@ -12,28 +12,30 @@ const REGION = 'europe-west1'
 const app = express()
 app.use(bodyParser.json())
 admin.initializeApp()
-/*
-TODO
-SMS: IN / OUT
-Deploy to firebase
-logging (simple call logs might be useful)
-*/
 
+/**
+ * Endpoint that returns call screening message to play to the receiver before
+ * the call connects
+ *
+ */
 app.post('/voice/screen', (_req: express.Request, resp: express.Response) => {
   resp.header('Content-Type', 'text/xml')
-  const twiml = new TwimlDialer().screenResponse()
+  const twiml = new TwimlDialer().screenResponse(new Pool(POOL_DATA))
   resp.status(200).send(twiml.toString())
 })
 
+/**
+ * General purpose endpoint for receiving voice webhooks
+ */
 app.post('/voice', (req: express.Request, resp: express.Response) => {
   resp.header('Content-Type', 'text/xml')
   const dialCallStatus = req.body.DialCallStatus
   console.log(`URL Called ${getCurrentUrl(req)}`)
   console.log(`Dial Status ${dialCallStatus}`)
   // todo extract out this logic
-  const pool = new Pool(POOL)
+  const pool = new Pool(POOL_DATA)
   const numbersUsed: string[] = parseQueryStringToArray(req)
-  console.log(`NUMBERS  ${numbersUsed}`)
+
   const nextPerson: Person | undefined = pool.getNextPerson(numbersUsed)
 
   if (!nextPerson || !shouldTryNext(dialCallStatus)) {

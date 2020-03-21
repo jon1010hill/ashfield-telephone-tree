@@ -3,10 +3,10 @@ import * as twilio from 'twilio'
 import VoiceResponse = require('twilio/lib/twiml/VoiceResponse')
 import {Person} from './types'
 export class TwimlDialer {
-  screenResponse() {
+  screenResponse(pool: Pool) {
     return new twilio.twiml.VoiceResponse().say(
       {voice: 'woman'},
-      'Hello get ready for your call'
+      pool.getScreenMessage()
     )
   }
   emptyResponse() {

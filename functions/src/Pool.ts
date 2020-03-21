@@ -35,6 +35,10 @@ export class Pool {
     return this.data.maxCallDuration
   }
 
+  getScreenMessage(): string {
+    return this.data.screen
+  }
+
   getRingTimeOut(): number {
     return this.data.ringTimeout
   }
