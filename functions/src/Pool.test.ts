@@ -3,7 +3,7 @@ import * as chaiAsPromised from 'chai-as-promised'
 chai.use(chaiAsPromised)
 import 'mocha'
 import {PoolData} from './types'
-import {getTestPool} from './Mother.test'
+import {getTestPool, getTestPoolWithDuplicateNumbers} from './Mother.test'
 import {Pool} from './Pool'
 
 const expect = chai.expect
@@ -24,7 +24,7 @@ describe('Pool tests', () => {
     const pool: Pool = new Pool(poolData)
 
     expect(pool.getNextPerson(pool.getNumbers())).to.be.undefined
-    console.log(pool.getNextPerson(['1', '2']))
+
     expect(pool.getNextPerson(['1', '2'])).to.deep.equal({
       name: 'Bill',
       number: '3',
@@ -37,5 +37,13 @@ describe('Pool tests', () => {
     })
     const randomNumber = pool.getNextPerson(['1'])!.number
     expect(randomNumber).to.be.oneOf(['2', '3'])
+  })
+
+  it('test getNextPerson excludes used numbers with duplicate number pool', () => {
+    const poolData: PoolData = getTestPoolWithDuplicateNumbers()
+    const pool: Pool = new Pool(poolData)
+
+    expect(pool.getNextPerson(pool.getNumbers())).to.be.undefined
+    expect(pool.getNextPerson(['1'])).to.be.undefined
   })
 })

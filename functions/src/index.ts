@@ -1,12 +1,12 @@
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
-import * as querystring from 'querystring'
-import * as twilio from 'twilio'
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
+import {TwimlDialer} from './TwimlDialer'
+import {Pool} from './Pool'
+import {POOL, Person} from './types'
+import {parseQueryStringToArray, getNextActionUrl} from './util'
 // tslint:disable-next-line: import-name
-import VoiceResponse = require('twilio/lib/twiml/VoiceResponse')
-import {POOL} from './types'
 
 const REGION = 'europe-west1'
 const app = express()
@@ -22,42 +22,36 @@ SMS: IN / OUT
 Deploy to firebase
 */
 app.post('/voice', (req: express.Request, resp: express.Response) => {
-  const thisUrl = getCurrentUrl(req)
-  const body = req.body
-  const from = body.From
-  const numbersTriedStr = req.query.numbersTried
-    ? `${req.query.numbersTried},${from}`
-    : from
-  const queryString = querystring.escape(numbersTriedStr)
-  //  handleCallStatus(body.DialCallStatus)
-  console.log(`Received request at + ${thisUrl}`)
-  console.log(numbersTriedStr)
-  const actionUrl = `${thisUrl}?numbersTried=${queryString}`
-  console.log(actionUrl)
-  const twiml = new twilio.twiml.VoiceResponse()
-
-  const options = {
-    timeout: POOL.ringTimeout,
-    timeLimit: POOL.maxCallDuration,
-    action: actionUrl
-
-    // todo twilio dialer client errors with bad callerId, why? sip?
-    // todo action: NO_ANSWER
-    // todo we need to handle DialCallStatus
-  }
-  twiml.say({voice: POOL.voice as VoiceResponse.SayVoice}, POOL.messages.intro) // todo variable substitution
-
-  twiml.dial(options).number({url: '/screen'}, POOL.people[0].number)
-
   resp.header('Content-Type', 'text/xml')
-  resp.send(twiml.toString())
-  resp.status(200)
-})
 
-function getCurrentUrl(req: express.Request) {
-  // tslint:disable-next-line: prefer-template
-  return req.protocol + '://' + req.get('host') + req.originalUrl
-}
+  // todo extract out this logic
+  const pool = new Pool(POOL)
+  const numbersUsed: string[] = parseQueryStringToArray(req)
+  console.log(`NUMBERS  ${numbersUsed}`)
+  const nextPerson: Person | undefined = pool.getNextPerson(numbersUsed)
+
+  if (!nextPerson) {
+    console.log('Noone lef to Dial!')
+    resp.status(200).send(new TwimlDialer().emptyResponse())
+  } else {
+    console.log('Found next number to dial')
+    const actionUrl: string = getNextActionUrl(
+      req,
+      nextPerson ? nextPerson.number : undefined
+    )
+
+    console.log(`Next Action Url ${actionUrl}`)
+
+    const twiml = new TwimlDialer().dialNext(
+      pool,
+      nextPerson,
+      numbersUsed,
+      actionUrl
+    )
+    console.log(twiml)
+    resp.status(200).send(twiml.toString())
+  }
+})
 
 // function handleCallStatus(status: string, numbersDialled: string) {
 //   console.log(status)
