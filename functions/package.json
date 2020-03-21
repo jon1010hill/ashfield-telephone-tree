@@ -2,18 +2,20 @@
   "name": "functions",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "build": "tsc && cp data.json lib/",
+    "build": "tsc && cp ./src/data.json lib/",
     "serve": "yarn build && firebase emulators:start --only functions",
     "shell": "yarn build && firebase functions:shell",
     "start": "yarn shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "test": "yarn build && yarn nyc mocha -r tsconfig-paths/register -r ts-node/register -r source-map-support/register src/*.test.ts --timeout 10000 --bail"
   },
   "engines": {
     "node": "10"
   },
   "main": "lib/index.js",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cors": "2.8.5",
     "express": "4.17.1",
     "firebase-admin": "^8.6.0",
@@ -29,8 +31,10 @@
     "chai-as-promised": "7.1.1",
     "firebase-functions-test": "^0.1.6",
     "mocha": "7.1.1",
+    "nyc": "^15.0.0",
     "prettier": "1.19.1",
     "source-map-support": "0.5.16",
+    "ts-node": "^8.7.0",
     "tsconfig-paths": "3.9.0",
     "tslint": "6.1.0",
     "tslint-config-airbnb": "5.11.2",
