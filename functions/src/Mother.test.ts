@@ -7,6 +7,7 @@ export function getTestPool(): PoolData {
     name: 'Smith Street',
     number: '+44xxxxxxxxxx',
     voice: 'Poly.Brian',
+    screen: 'You are about to receive a call',
     messages: {
       intro:
         'Hello. You have reached {NAME} community line. We will try to connect you to {PERSON} on {STREET}}',
@@ -38,6 +39,7 @@ export function getTestPoolWithDuplicateNumbers(): PoolData {
     name: 'Smith Street',
     number: '+44xxxxxxxxxx',
     voice: 'Poly.Brian',
+    screen: 'You are about to receive a call',
     messages: {
       intro:
         'Hello. You have reached {NAME} community line. We will try to connect you to {PERSON} on {STREET}}',

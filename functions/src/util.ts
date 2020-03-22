@@ -1,5 +1,6 @@
 import * as querystring from 'querystring'
 import * as express from 'express'
+import {API_DATA} from './types'
 
 export function parseQueryStringToArray(req: express.Request) {
   const numbersTriedStr = req.query.numbersTried
@@ -10,8 +11,19 @@ export function parseQueryStringToArray(req: express.Request) {
 }
 
 export function getCurrentUrl(req: express.Request) {
-  // tslint:disable-next-line: prefer-template
-  return req.protocol + '://' + req.get('host') + req.originalUrl
+  if (req.host === 'localhost') {
+    // tslint:disable-next-line: prefer-template
+    return req.protocol + '://' + req.get('host') + req.originalUrl
+  }
+
+  return API_DATA.baseUri + req.originalUrl
+}
+
+export function getFirebaseFunctionCurrentUrl(req: express.Request) {
+  return (
+    // tslint:disable-next-line: prefer-template
+    req.protocol + '://' + process.env.FUNCTION_REGION + '-' + req.originalUrl
+  )
 }
 
 export function getQueryStringFromArray(numbers: string[]) {

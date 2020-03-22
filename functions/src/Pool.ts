@@ -7,7 +7,7 @@ export class Pool {
     this.data = data
   }
 
-  getCommunityName() {
+  getCommunityName(): string {
     return this.data.name
   }
 

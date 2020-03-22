@@ -17,6 +17,7 @@ const expect = chai.expect
 const request = mockReq({
   protocol: 'http',
   originalUrl: '/voice',
+  host: 'localhost',
   get(_key: string) {
     return 'localhost'
   }
@@ -44,6 +45,7 @@ describe('util function tests', () => {
       mockReq({
         protocol: 'http',
         originalUrl: '/voice',
+        host: 'localhost',
         get(_key: string) {
           return 'localhost'
         },
