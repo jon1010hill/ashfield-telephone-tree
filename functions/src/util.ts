@@ -22,10 +22,10 @@ export function getCurrentUrl(req: express.Request) {
 export function getCallScreenUrl(req: express.Request) {
   if (req.host === 'localhost') {
     // tslint:disable-next-line: prefer-template
-    return req.protocol + '://' + req.get('host') + '/screen'
+    return req.protocol + '://' + req.get('host') + '/voice/screen'
   }
   // tslint:disable-next-line: prefer-template
-  return API_DATA.baseUri + '/screen'
+  return API_DATA.baseUri + '/voice/screen'
 }
 
 export function getFirebaseFunctionCurrentUrl(req: express.Request) {

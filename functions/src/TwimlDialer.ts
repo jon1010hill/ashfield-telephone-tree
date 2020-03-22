@@ -18,7 +18,7 @@ export class TwimlDialer {
     pool: Pool,
     personToDial: Person,
     usedNumbers: string[],
-    callScreenUrl: string,
+    _callScreenUrl: string,
     actionUrl?: string
   ): string {
     console.log(`Dial next called ${usedNumbers.length}`)
@@ -43,8 +43,8 @@ export class TwimlDialer {
         // Intro message
         {voice: pool.getVoice() as VoiceResponse.SayVoice},
         pool.getBespokeMessagesForPerson(personToDial).intro
-      ) // todo variable substitution
-      twiml.dial(options).number({url: callScreenUrl}, personToDial.number)
+      )
+      twiml.dial(options).number(personToDial.number)
     } else {
       console.log('YES WE HAVE PREVIOUS NUMBERS')
       twiml.say(
@@ -52,7 +52,7 @@ export class TwimlDialer {
         {voice: pool.getVoice() as VoiceResponse.SayVoice},
         pool.getBespokeMessagesForPerson(personToDial).next
       )
-      twiml.dial(options).number({url: callScreenUrl}, personToDial.number)
+      twiml.dial(options).number(personToDial.number)
     }
     return twiml.toString()
   }
