@@ -19,6 +19,15 @@ export function getCurrentUrl(req: express.Request) {
   return API_DATA.baseUri + req.originalUrl
 }
 
+export function getCallScreenUrl(req: express.Request) {
+  if (req.host === 'localhost') {
+    // tslint:disable-next-line: prefer-template
+    return req.protocol + '://' + req.get('host') + '/screen'
+  }
+  // tslint:disable-next-line: prefer-template
+  return API_DATA.baseUri + '/screen'
+}
+
 export function getFirebaseFunctionCurrentUrl(req: express.Request) {
   return (
     // tslint:disable-next-line: prefer-template

@@ -10,7 +10,8 @@ import {
   parseQueryStringToArray,
   getNextActionUrl,
   getCurrentUrl,
-  getFirebaseFunctionCurrentUrl
+  getFirebaseFunctionCurrentUrl,
+  getCallScreenUrl
 } from './util'
 // tslint:disable-next-line: import-name
 
@@ -39,6 +40,7 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
   const dialCallStatus = req.body.DialCallStatus
   console.log(`URL Called ${getCurrentUrl(req)}`)
   console.log(`Firebase URL ${getFirebaseFunctionCurrentUrl}`)
+  console.log(`CallScreenURL ${getCallScreenUrl(req)}`)
   console.log(`Dial Status ${dialCallStatus}`)
   // todo extract out this logic
   const pool = new Pool(POOL_DATA)
@@ -63,7 +65,7 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
       pool,
       nextPerson,
       numbersUsed,
-      getCurrentUrl(req),
+      getCallScreenUrl(req),
       actionUrl
     )
     console.log(twiml)

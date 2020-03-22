@@ -18,13 +18,12 @@ export class TwimlDialer {
     pool: Pool,
     personToDial: Person,
     usedNumbers: string[],
-    calledUrl: string,
+    callScreenUrl: string,
     actionUrl?: string
   ): string {
     console.log(`Dial next called ${usedNumbers.length}`)
     const twiml = new twilio.twiml.VoiceResponse()
 
-    const callScreenUrl = `${calledUrl}/screen`
     if (!personToDial) {
       console.log('No more people to dial')
       return twiml.toString() // TODO, reached end of pool
