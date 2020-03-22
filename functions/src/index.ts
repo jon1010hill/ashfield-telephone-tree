@@ -10,7 +10,6 @@ import {
   parseQueryStringToArray,
   getNextActionUrl,
   getCurrentUrl,
-  getFirebaseFunctionCurrentUrl,
   getCallScreenUrl
 } from './util'
 // tslint:disable-next-line: import-name
@@ -39,14 +38,16 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
   resp.header('Content-Type', 'text/xml')
   const dialCallStatus = req.body.DialCallStatus
   console.log(`URL Called ${getCurrentUrl(req)}`)
-  console.log(`Firebase URL ${getFirebaseFunctionCurrentUrl}`)
   console.log(`CallScreenURL ${getCallScreenUrl(req)}`)
   console.log(`Dial Status ${dialCallStatus}`)
   // todo extract out this logic
   const pool = new Pool(POOL_DATA)
   const numbersUsed: string[] = parseQueryStringToArray(req)
 
-  const nextPerson: Person | undefined = pool.getNextPerson(numbersUsed)
+  const nextPerson: Person | undefined = pool.getNextPerson(
+    numbersUsed,
+    req.body.Caller
+  )
 
   if (!nextPerson || !shouldTryNext(dialCallStatus)) {
     // TODO, say sorry no one available just now

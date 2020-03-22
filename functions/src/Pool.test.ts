@@ -46,4 +46,16 @@ describe('Pool tests', () => {
     expect(pool.getNextPerson(pool.getNumbers())).to.be.undefined
     expect(pool.getNextPerson(['1'])).to.be.undefined
   })
+
+  it('test getNextPerson excludes used numbers and caller', () => {
+    const poolData: PoolData = getTestPool()
+    const pool: Pool = new Pool(poolData)
+
+    expect(pool.getNextPerson(['1', '2'], '3')).to.be.undefined
+    expect(pool.getNextPerson(['1'], '3')).to.deep.equal({
+      name: 'Alice',
+      number: '2',
+      address: 'The Road'
+    })
+  })
 })

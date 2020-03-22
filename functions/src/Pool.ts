@@ -43,11 +43,11 @@ export class Pool {
     return this.data.ringTimeout
   }
 
-  getNextPerson(usedNumbers: string[]): Person | undefined {
+  getNextPerson(usedNumbers: string[], caller?: string): Person | undefined {
     console.log(`getNextPerson called and filter ${usedNumbers}`)
     // todo check usedNumbers exist in pool
     const filtered = this.data.people.filter(
-      person => !usedNumbers.includes(person.number)
+      person => !usedNumbers.includes(person.number) && caller !== person.number
     )
     return filtered[Math.floor(Math.random() * filtered.length)]
   }
