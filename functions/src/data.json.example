@@ -1,10 +1,15 @@
 {
+  "api": {
+    "baseUri": "https://functions"
+  },
   "pool": {
     "ringTimeout": 8,
     "maxCallDuration": 600,
     "name": "Smith Street",
     "number": "+44xxxxxxxxxx",
     "voice": "Poly.Brian",
+    "screen": "This is the {NAME} community line, we are about to connect you to a caller. If you reject this call it will pass to someone else",
+
     "messages": {
       "intro": "Hello. You have reached {NAME} community line. We will try to connect you to {PERSON} on {STREET}}",
       "next": "We are now trying to connect you to {PERSON} on {STREET}"
