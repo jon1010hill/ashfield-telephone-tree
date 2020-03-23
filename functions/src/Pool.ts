@@ -12,7 +12,7 @@ export class Pool {
   }
 
   getNumbers(): string[] {
-    return this.data.people.map(person => person.number)
+    return this.data.people.map((person: Person) => person.number)
   }
 
   getVoice(): string {
@@ -43,11 +43,16 @@ export class Pool {
     return this.data.ringTimeout
   }
 
+  getCallerNumber(): string {
+    return this.data.number
+  }
+
   getNextPerson(usedNumbers: string[], caller?: string): Person | undefined {
     console.log(`getNextPerson called and filter ${usedNumbers}`)
     // todo check usedNumbers exist in pool
     const filtered = this.data.people.filter(
-      person => !usedNumbers.includes(person.number) && caller !== person.number
+      (person: Person) =>
+        !usedNumbers.includes(person.number) && caller !== person.number
     )
     return filtered[Math.floor(Math.random() * filtered.length)]
   }

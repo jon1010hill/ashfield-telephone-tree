@@ -1,17 +1,17 @@
-import * as express from 'express'
-
+import express from 'express'
 import * as bodyParser from 'body-parser'
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import {TwimlDialer} from './TwimlDialer'
 import {Pool} from './Pool'
-import {POOL_DATA, Person} from './types'
 import {
   parseQueryStringToArray,
   getNextActionUrl,
   getCurrentUrl,
   getCallScreenUrl
 } from './util'
+import {PoolRepository} from './PoolRepository'
+import {APP_DATA, Person} from './types'
 // tslint:disable-next-line: import-name
 
 const REGION = 'europe-west1'
@@ -24,12 +24,12 @@ admin.initializeApp()
  * the call connects
  *
  */
-app.post('/voice/screen', (req: express.Request, resp: express.Response) => {
-  resp.header('Content-Type', 'text/xml')
-  console.log(`URL Called ${getCurrentUrl(req)}`)
-  const twiml = new TwimlDialer().screenResponse(new Pool(POOL_DATA))
-  resp.status(200).send(twiml.toString())
-})
+// app.post('/voice/screen', (req: express.Request, resp: express.Response) => {
+//   resp.header('Content-Type', 'text/xml')
+//   console.log(`URL Called ${getCurrentUrl(req)}`)
+//   const twiml = new TwimlDialer().screenResponse(new Pool(APP_DATA))
+//   resp.status(200).send(twiml.toString())
+// })
 
 /**
  * General purpose endpoint for receiving voice webhooks
@@ -37,11 +37,19 @@ app.post('/voice/screen', (req: express.Request, resp: express.Response) => {
 app.post('/voice', (req: express.Request, resp: express.Response) => {
   resp.header('Content-Type', 'text/xml')
   const dialCallStatus = req.body.DialCallStatus
+  const callerNumber = req.body.Caller
   console.log(`URL Called ${getCurrentUrl(req)}`)
   console.log(`CallScreenURL ${getCallScreenUrl(req)}`)
   console.log(`Dial Status ${dialCallStatus}`)
   // todo extract out this logic
-  const pool = new Pool(POOL_DATA)
+  const pool: Pool | undefined = new PoolRepository(APP_DATA).findByCaller(
+    callerNumber
+  )
+
+  if (pool === undefined) {
+    resp.status(200).send(new TwimlDialer().emptyResponse())
+    return
+  }
   const numbersUsed: string[] = parseQueryStringToArray(req)
 
   const nextPerson: Person | undefined = pool.getNextPerson(

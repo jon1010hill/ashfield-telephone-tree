@@ -1,8 +1,6 @@
 import * as chai from 'chai'
-import * as chaiAsPromised from 'chai-as-promised'
 import sinonChai = require('sinon-chai')
 import {mockReq} from 'sinon-express-mock'
-chai.use(chaiAsPromised)
 chai.use(sinonChai)
 import 'mocha'
 

@@ -1,11 +1,19 @@
-import {PoolData} from './types'
+import {PoolData, Api} from './types'
 
-export function getTestPool(): PoolData {
+export function getApi(): Api {
+  return {
+    baseUri: 'http://localhost'
+  }
+}
+export function getTestPool(
+  communityName?: string,
+  callerNumber?: string
+): PoolData {
   return {
     ringTimeout: 8,
     maxCallDuration: 600,
-    name: 'Smith Street',
-    number: '+44xxxxxxxxxx',
+    name: communityName ? communityName : 'Smith Street',
+    number: callerNumber ? callerNumber : '+44xxxxxxxxxx',
     voice: 'Poly.Brian',
     screen: 'You are about to receive a call',
     messages: {

@@ -1,3 +1,4 @@
+[
 {
   "api": {
     "baseUri": "https://functions"
@@ -28,3 +29,4 @@
     ]
   }
 }
+]

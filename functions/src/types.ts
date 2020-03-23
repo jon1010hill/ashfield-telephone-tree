@@ -1,7 +1,9 @@
-import * as db from './data.json'
-export const API_DATA = db.api
-export const POOL_DATA = db.pool
-export type PoolData = typeof POOL_DATA
-export type Person = typeof POOL_DATA.people[0]
-export type Messages = typeof POOL_DATA.messages
-export type Api = typeof db.api
+import * as db from './data/data.json'
+
+export type AppData = typeof db[0]
+export const APP_DATA: AppData[] = db
+const dataSample: AppData = db[0]
+export type PoolData = typeof dataSample.pool
+export type Person = typeof dataSample.pool.people[0]
+export type Messages = typeof dataSample.pool.messages
+export type Api = typeof dataSample.api
