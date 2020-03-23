@@ -1,5 +1,6 @@
 import * as querystring from 'querystring'
 import * as express from 'express'
+import { API_DATA } from './types'
 
 export function parseQueryStringToArray(req: express.Request) {
   const numbersTriedStr = req.query.numbersTried
