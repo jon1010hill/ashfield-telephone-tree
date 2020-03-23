@@ -37,14 +37,16 @@ admin.initializeApp()
 app.post('/voice', (req: express.Request, resp: express.Response) => {
   resp.header('Content-Type', 'text/xml')
   const dialCallStatus = req.body.DialCallStatus
-  const callerNumber = req.body.Caller
+  // const callerNumber = req.body.Caller
+  const dialledNumber = req.body.Called
+  console.log(req.host)
   console.log(`URL Called ${getCurrentUrl(req)}`)
   console.log(`CallScreenURL ${getCallScreenUrl(req)}`)
   console.log(`Dial Status ${dialCallStatus}`)
   // todo extract out this logic
   const pool: Pool | undefined = new PoolRepository(
     APP_DATA
-  ).findByNumberDialled(callerNumber)
+  ).findByNumberDialled(dialledNumber)
 
   if (pool === undefined) {
     resp.status(200).send(new TwimlDialer().emptyResponse())

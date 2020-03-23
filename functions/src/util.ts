@@ -1,6 +1,6 @@
 import * as querystring from 'querystring'
 import * as express from 'express'
-import { API_DATA } from './types'
+import {API_DATA} from './types'
 
 export function parseQueryStringToArray(req: express.Request) {
   const numbersTriedStr = req.query.numbersTried
@@ -11,7 +11,7 @@ export function parseQueryStringToArray(req: express.Request) {
 }
 
 export function getCurrentUrl(req: express.Request) {
-  if (req.host === 'localhost') {
+  if (req.host === 'localhost' || req.host.endsWith('ngrok.io')) {
     // tslint:disable-next-line: prefer-template
     return req.protocol + '://' + req.get('host') + req.originalUrl
   }
