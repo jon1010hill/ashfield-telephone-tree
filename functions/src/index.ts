@@ -42,9 +42,9 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
   console.log(`CallScreenURL ${getCallScreenUrl(req)}`)
   console.log(`Dial Status ${dialCallStatus}`)
   // todo extract out this logic
-  const pool: Pool | undefined = new PoolRepository(APP_DATA).findByCaller(
-    callerNumber
-  )
+  const pool: Pool | undefined = new PoolRepository(
+    APP_DATA
+  ).findByNumberDialled(callerNumber)
 
   if (pool === undefined) {
     resp.status(200).send(new TwimlDialer().emptyResponse())
