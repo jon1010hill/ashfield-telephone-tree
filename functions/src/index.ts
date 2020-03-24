@@ -5,13 +5,13 @@ import * as admin from 'firebase-admin'
 import {TwimlDialer} from './TwimlDialer'
 import {Pool} from './Pool'
 import {
-  parseQueryStringToArray,
-  getNextActionUrl,
+  // parseQueryStringToArray,
+  // getNextActionUrl,
   getCurrentUrl,
   getCallScreenUrl
 } from './util'
 import {PoolRepository} from './PoolRepository'
-import {APP_DATA, Person} from './types'
+import {APP_DATA} from './types'
 // tslint:disable-next-line: import-name
 
 const REGION = 'europe-west1'
@@ -52,56 +52,56 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
     resp.status(200).send(new TwimlDialer().emptyResponse())
     return
   }
-  const numbersUsed: string[] = parseQueryStringToArray(req)
+  // const numbersUsed: string[] = parseQueryStringToArray(req)
 
-  const nextPerson: Person | undefined = pool.getNextPerson(
-    numbersUsed,
-    req.body.Caller
-  )
+  // const nextPerson: Person | undefined = pool.getNextPerson(
+  //   numbersUsed,
+  //   req.body.Caller
+  // )
+  resp.status(200).send(new TwimlDialer().say('hello world').toString())
+  // if (!nextPerson || !shouldTryNext(dialCallStatus)) {
+  //   // TODO, say sorry no one available just now
+  //   console.log('No one left to Dial!')
+  //   resp.status(200).send(new TwimlDialer().emptyResponse())
+  // } else {
+  //   console.log('Found next number to dial')
+  //   const actionUrl: string = getNextActionUrl(
+  //     req,
+  //     nextPerson ? nextPerson.number : undefined
+  //   )
 
-  if (!nextPerson || !shouldTryNext(dialCallStatus)) {
-    // TODO, say sorry no one available just now
-    console.log('No one left to Dial!')
-    resp.status(200).send(new TwimlDialer().emptyResponse())
-  } else {
-    console.log('Found next number to dial')
-    const actionUrl: string = getNextActionUrl(
-      req,
-      nextPerson ? nextPerson.number : undefined
-    )
+  //   console.log(`Next Action Url ${actionUrl}`)
 
-    console.log(`Next Action Url ${actionUrl}`)
-
-    const twiml = new TwimlDialer().dialNext(
-      pool,
-      nextPerson,
-      numbersUsed,
-      getCallScreenUrl(req),
-      actionUrl
-    )
-    console.log(twiml)
-    resp.status(200).send(twiml.toString())
-  }
+  //   const twiml = new TwimlDialer().dialNext(
+  //     pool,
+  //     nextPerson,
+  //     numbersUsed,
+  //     getCallScreenUrl(req),
+  //     actionUrl
+  //   )
+  //   console.log(twiml)
+  //   resp.status(200).send(twiml.toString())
+  // }
 })
 
-function shouldTryNext(status: string) {
-  console.log(status)
-  switch (status) {
-    case undefined:
-      return true
-    case 'no-answer':
-      return true
-    case 'failed':
-      return true
-    case 'busy':
-      return true
-    case 'completed':
-      return false
-    case 'answered':
-      return false
-    default:
-      return false
-  }
-}
+// function shouldTryNext(status: string) {
+//   console.log(status)
+//   switch (status) {
+//     case undefined:
+//       return true
+//     case 'no-answer':
+//       return true
+//     case 'failed':
+//       return true
+//     case 'busy':
+//       return true
+//     case 'completed':
+//       return false
+//     case 'answered':
+//       return false
+//     default:
+//       return false
+//   }
+// }
 
 exports.ashfield = functions.region(REGION).https.onRequest(app)

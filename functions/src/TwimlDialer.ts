@@ -14,6 +14,12 @@ export class TwimlDialer {
   emptyResponse() {
     return new twilio.twiml.VoiceResponse().toString()
   }
+
+  say(s: string) {
+    const twiml = new twilio.twiml.VoiceResponse()
+    twiml.say(s)
+    return twiml
+  }
   dialNext(
     pool: Pool,
     personToDial: Person,
