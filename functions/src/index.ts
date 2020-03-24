@@ -53,6 +53,8 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
     return
   }
   // const numbersUsed: string[] = parseQueryStringToArray(req)
+  // const pool = new Pool(POOL_DATA)
+  // const numbersUsed: string[] = parseQueryStringToArray(req)
 
   // const nextPerson: Person | undefined = pool.getNextPerson(
   //   numbersUsed,
