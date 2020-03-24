@@ -1,3 +1,4 @@
+import {BeginCallSequence} from './command/types'
 export class CallHandler {
-  inboundVoiceCall() {}
+  inboundVoiceCall(_command: BeginCallSequence) {}
 }
