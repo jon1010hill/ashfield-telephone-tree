@@ -10,8 +10,7 @@ import {
   getCurrentUrl,
   getCallScreenUrl
 } from './util'
-import {PoolRepository} from './PoolRepository'
-import {APP_DATA} from './types'
+import {APP_DATA, POOL_REPO} from './types'
 // tslint:disable-next-line: import-name
 
 const REGION = 'europe-west1'
@@ -44,9 +43,7 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
   console.log(`CallScreenURL ${getCallScreenUrl(req)}`)
   console.log(`Dial Status ${dialCallStatus}`)
   // todo extract out this logic
-  const pool: Pool | undefined = new PoolRepository(
-    APP_DATA
-  ).findByNumberDialled(dialledNumber)
+  const pool: Pool | undefined = POOL_REPO.findByNumberDialled(dialledNumber)
 
   if (pool === undefined) {
     resp.status(200).send(new TwimlDialer().emptyResponse())

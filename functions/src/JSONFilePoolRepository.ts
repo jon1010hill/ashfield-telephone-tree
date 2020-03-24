@@ -1,7 +1,13 @@
 import {AppData, PoolData} from './types'
 import {Pool} from './Pool'
+import {IPoolRepository} from './IPoolRepository'
 
-export class PoolRepository {
+/**
+ * A repository implementation that takes it's data from a JSON file.
+ *
+ * Static, simple, stopgap solution until a proper hosted database is in place.
+ */
+export class JSONFilePoolRepository implements IPoolRepository {
   private db: AppData
 
   constructor(appData: AppData) {
