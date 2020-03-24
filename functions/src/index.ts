@@ -2,7 +2,7 @@ import express from 'express'
 import * as bodyParser from 'body-parser'
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import {TwimlDialer} from './TwimlDialer'
+import {TwilioUtil} from './TwilioUtil'
 import {Pool} from './Pool'
 import {
   // parseQueryStringToArray,
@@ -10,7 +10,9 @@ import {
   getCurrentUrl,
   getCallScreenUrl
 } from './util'
-import {APP_DATA, POOL_REPO} from './types'
+import {TwilioInboundCallData} from './types'
+import {CallHandler} from './CallHandler'
+import {BeginCallSequence} from './command/types'
 // tslint:disable-next-line: import-name
 
 const REGION = 'europe-west1'
@@ -31,56 +33,17 @@ admin.initializeApp()
 // })
 
 /**
- * General purpose endpoint for receiving voice webhooks
+ * General purpose endpoint for receiving twilio voice webhooks
  */
 app.post('/voice', (req: express.Request, resp: express.Response) => {
   resp.header('Content-Type', 'text/xml')
-  const dialCallStatus = req.body.DialCallStatus
-  // const callerNumber = req.body.Caller
-  const dialledNumber = req.body.Called
-  console.log(req.host)
-  console.log(`URL Called ${getCurrentUrl(req)}`)
-  console.log(`CallScreenURL ${getCallScreenUrl(req)}`)
-  console.log(`Dial Status ${dialCallStatus}`)
-  // todo extract out this logic
-  const pool: Pool | undefined = POOL_REPO.findByNumberDialled(dialledNumber)
 
-  if (pool === undefined) {
-    resp.status(200).send(new TwimlDialer().emptyResponse())
-    return
+  const command: BeginCallSequence = {
+    createdAt: new Date(),
+    data: new TwilioUtil().toInboundCallData(req.body as TwilioInboundCallData)
   }
-  // const numbersUsed: string[] = parseQueryStringToArray(req)
-  // const pool = new Pool(POOL_DATA)
-  // const numbersUsed: string[] = parseQueryStringToArray(req)
 
-  // const nextPerson: Person | undefined = pool.getNextPerson(
-  //   numbersUsed,
-  //   req.body.Caller
-  // )
-  resp.status(200).send(new TwimlDialer().say('hello world').toString())
-  // if (!nextPerson || !shouldTryNext(dialCallStatus)) {
-  //   // TODO, say sorry no one available just now
-  //   console.log('No one left to Dial!')
-  //   resp.status(200).send(new TwimlDialer().emptyResponse())
-  // } else {
-  //   console.log('Found next number to dial')
-  //   const actionUrl: string = getNextActionUrl(
-  //     req,
-  //     nextPerson ? nextPerson.number : undefined
-  //   )
-
-  //   console.log(`Next Action Url ${actionUrl}`)
-
-  //   const twiml = new TwimlDialer().dialNext(
-  //     pool,
-  //     nextPerson,
-  //     numbersUsed,
-  //     getCallScreenUrl(req),
-  //     actionUrl
-  //   )
-  //   console.log(twiml)
-  //   resp.status(200).send(twiml.toString())
-  // }
+  resp.status(200).send(new CallHandler().inboundVoiceCall(command))
 })
 
 // function shouldTryNext(status: string) {
