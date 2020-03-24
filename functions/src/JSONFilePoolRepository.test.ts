@@ -1,6 +1,6 @@
 import * as chai from 'chai'
 import {PoolData, Api} from './types'
-import {PoolRepository} from './PoolRepository'
+import {JSONFilePoolRepository} from './JSONFilePoolRepository'
 import {getTestPool, getApi} from './Mother.test'
 
 import 'mocha'
@@ -13,7 +13,7 @@ describe('PoolRepository tests', () => {
       getTestPool('Project A', '01234'),
       getTestPool('Project B', '56789')
     ]
-    const repo = new PoolRepository({api, pools: samplePoolData})
+    const repo = new JSONFilePoolRepository({api, pools: samplePoolData})
     chai.expect(repo.findByNumberDialled('foobar')).to.be.undefined
 
     const pool: Pool | undefined = repo.findByNumberDialled('01234')
