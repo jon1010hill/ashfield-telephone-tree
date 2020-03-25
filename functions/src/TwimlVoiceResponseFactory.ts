@@ -39,9 +39,9 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
     return twiml.toString()
   }
 
-  createNextResponse(usedNumbers: string[]): string {
+  createNextResponse(previoulyDialledNumbers: string[]): string {
     const person: Person | undefined = this.pool.getNextPerson(
-      usedNumbers,
+      previoulyDialledNumbers,
       this.caller
     )
     if (!person) {
@@ -51,14 +51,14 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
     const messages = this.pool.getBespokeMessagesForPerson(person)
     const dialInstruction = this.dial({to: person.number})
 
-    if (usedNumbers.length === 0) {
+    if (previoulyDialledNumbers.length === 0) {
       console.log('No previous used numbers, this is the first person the pool')
       // first call attempt
       const sayInstruction = this.say({
         message: messages.intro,
         to: person.number
       })
-      //todo action url and screen url
+      //
 
       return sayInstruction + dialInstruction
     }

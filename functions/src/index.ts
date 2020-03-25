@@ -24,6 +24,7 @@ export const COMMAND_HANDLER = new CallHandler()
  * General purpose endpoint for receiving twilio voice webhooks
  */
 app.post('/voice', (req: express.Request, resp: express.Response) => {
+  console.log('Received POST request from Twilio')
   resp.header('Content-Type', 'text/xml')
 
   const numbersPreviouslyDialled: string[] = parseQueryStringToArray(req)

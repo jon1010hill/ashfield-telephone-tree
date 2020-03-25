@@ -10,6 +10,6 @@ export class CallHandler {
     const pool: Pool = POOL_REPO.findByNumberDialled(command.data.called)
 
     const factory = new TwimlVoiceResponseFactory(pool, command.data.from)
-    return factory.createNextResponse()
+    return factory.createNextResponse(command.data.numbersPreviouslyDialled)
   }
 }

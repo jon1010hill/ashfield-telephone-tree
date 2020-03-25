@@ -30,13 +30,17 @@ export class InboundCallMapper implements IDataMapper<InboundCallData> {
   isValid(data: any): data is InboundCallData {
     const phoneUtil = googleLibphonenumber.PhoneNumberUtil.getInstance()
     // uk only support for now
-    const region = phoneUtil.getRegionCodeForCountryCode(44)
+    // const region = phoneUtil.getRegionCodeForCountryCode(44)
+    const fromNumber = phoneUtil.parse(data.from)
+    const toNumber = phoneUtil.parse(data.to)
+    const calledNumber = phoneUtil.parse(data.called)
+
     return (
       typeof data === 'object' &&
       Array.isArray(data.numbersPreviouslyDialled) &&
-      phoneUtil.isValidNumberForRegion(phoneUtil.parse(data.from, region)) &&
-      phoneUtil.isValidNumberForRegion(phoneUtil.parse(data.to), region) &&
-      phoneUtil.isValidNumberForRegion(phoneUtil.parse(data.called), region)
+      phoneUtil.isValidNumberForRegion(fromNumber) &&
+      phoneUtil.isValidNumberForRegion(toNumber) &&
+      phoneUtil.isValidNumberForRegion(calledNumber)
     )
   }
 }

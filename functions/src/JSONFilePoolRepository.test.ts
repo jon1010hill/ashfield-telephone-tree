@@ -14,11 +14,13 @@ describe('PoolRepository tests', () => {
       getTestPool('Project B', '56789')
     ]
     const repo = new JSONFilePoolRepository({api, pools: samplePoolData})
-    chai.expect(repo.findByNumberDialled('foobar')).to.be.undefined
+    chai
+      .expect(() => repo.findByNumberDialled('foobar'))
+      .to.throw('Pool does not exist')
 
-    const pool: Pool | undefined = repo.findByNumberDialled('01234')
+    const pool: Pool = repo.findByNumberDialled('01234')
     chai.expect(pool).to.not.be.undefined
-    chai.expect(pool!.getCommunityName()).to.equal('Project A')
-    chai.expect(pool!.getInboudNumber()).to.equal('01234')
+    chai.expect(pool.getCommunityName()).to.equal('Project A')
+    chai.expect(pool.getInboudNumber()).to.equal('01234')
   })
 })
