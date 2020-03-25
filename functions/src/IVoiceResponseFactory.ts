@@ -9,8 +9,6 @@ export type DialData = {
   readonly callScreenUrl?: string
 }
 
-export interface VoiceController {
-  createSayInstruction(data: SayData): string
-  createDialInstruction(data: DialData): string
-  createNextInstruction(usedNumbers: string[]): string
+export interface IVoiceResponseFactory {
+  createNextResponse(previouslyDialledNumbers: string[]): string
 }

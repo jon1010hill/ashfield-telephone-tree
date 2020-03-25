@@ -14,15 +14,15 @@ export class JSONFilePoolRepository implements IPoolRepository {
     this.db = JSON.parse(JSON.stringify(appData))
   }
 
-  findByNumberDialled(_number: string): Pool | undefined {
+  findByNumberDialled(numberDialled: string): Pool {
     const poolData: PoolData[] = this.db.pools.filter(
-      pool => pool.number === _number
+      pool => pool.number === numberDialled
     )
     if (poolData.length > 1) {
-      throw new Error('Duplicate data error') // todo consider error handling strategy
+      throw new Error('Duplicate data error')
     }
     if (poolData.length === 0) {
-      return undefined
+      throw new Error('Pool does not exist')
     }
     return new Pool(poolData[0])
   }

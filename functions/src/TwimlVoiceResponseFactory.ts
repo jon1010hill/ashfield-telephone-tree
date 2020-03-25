@@ -1,9 +1,9 @@
 import {Pool} from './Pool'
-import {VoiceController, SayData, DialData} from './VoiceController'
+import {IVoiceResponseFactory, SayData, DialData} from './IVoiceResponseFactory'
 import * as twilio from 'twilio'
 import VoiceResponse from 'twilio/lib/twiml/VoiceResponse'
 import {Person} from './types'
-export class TwimlVoiceController implements VoiceController {
+export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
   private readonly pool: Pool
   private readonly caller: string
 
@@ -16,7 +16,7 @@ export class TwimlVoiceController implements VoiceController {
     return new twilio.twiml.VoiceResponse().toString()
   }
 
-  createSayInstruction(data: SayData): string {
+  private say(data: SayData): string {
     const twiml = new twilio.twiml.VoiceResponse()
     twiml.say(
       // Intro message
@@ -26,7 +26,7 @@ export class TwimlVoiceController implements VoiceController {
     return twiml.toString()
   }
 
-  createDialInstruction(data: DialData): string {
+  private dial(data: DialData): string {
     const twiml = new twilio.twiml.VoiceResponse()
 
     const options = {
@@ -39,7 +39,7 @@ export class TwimlVoiceController implements VoiceController {
     return twiml.toString()
   }
 
-  createNextInstruction(usedNumbers: string[]): string {
+  createNextResponse(usedNumbers: string[]): string {
     const person: Person | undefined = this.pool.getNextPerson(
       usedNumbers,
       this.caller
@@ -49,12 +49,12 @@ export class TwimlVoiceController implements VoiceController {
       return this.emptyResponse().toString()
     }
     const messages = this.pool.getBespokeMessagesForPerson(person)
-    const dialInstruction = this.createDialInstruction({to: person.number})
+    const dialInstruction = this.dial({to: person.number})
 
     if (usedNumbers.length === 0) {
       console.log('No previous used numbers, this is the first person the pool')
       // first call attempt
-      const sayInstruction = this.createSayInstruction({
+      const sayInstruction = this.say({
         message: messages.intro,
         to: person.number
       })
@@ -63,7 +63,7 @@ export class TwimlVoiceController implements VoiceController {
       return sayInstruction + dialInstruction
     }
     console.log('Not first number in the pool')
-    const sayInstruction = this.createSayInstruction({
+    const sayInstruction = this.say({
       message: messages.next,
       to: person.number
     })

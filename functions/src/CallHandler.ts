@@ -1,17 +1,15 @@
 import {BeginCallSequence} from './command/types'
 import {Pool} from './Pool'
-import {POOL_REPO} from './types'
-// import {TwimlVoiceController} from './TwimlVoiceControler'
+import {IPoolRepository} from './IPoolRepository'
+import {JSONFilePoolRepository} from './JSONFilePoolRepository'
+import {APP_DATA} from './types'
+export const POOL_REPO: IPoolRepository = new JSONFilePoolRepository(APP_DATA)
+import {TwimlVoiceResponseFactory} from './TwimlVoiceResponseFactory'
 export class CallHandler {
   inboundVoiceCall(command: BeginCallSequence) {
-    const pool: Pool | undefined = POOL_REPO.findByNumberDialled(
-      command.data.called
-    )
-    if (!pool) {
-      throw new Error(`No pool found for command ${command}`)
-    }
-    // const voiceController = new TwimlVoiceController(pool, command.data.called)
+    const pool: Pool = POOL_REPO.findByNumberDialled(command.data.called)
 
-    return ''
+    const factory = new TwimlVoiceResponseFactory(pool, command.data.from)
+    return factory.createNextResponse()
   }
 }

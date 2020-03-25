@@ -2,23 +2,46 @@ import express from 'express'
 import * as bodyParser from 'body-parser'
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import {TwilioUtil} from './TwilioUtil'
-import {Pool} from './Pool'
-import {
-  // parseQueryStringToArray,
-  // getNextActionUrl,
-  getCurrentUrl,
-  getCallScreenUrl
-} from './util'
-import {TwilioInboundCallData} from './types'
 import {CallHandler} from './CallHandler'
 import {BeginCallSequence} from './command/types'
-// tslint:disable-next-line: import-name
-
+import {InboundCallMapper} from './InboundCallMapper'
+import {parseQueryStringToArray} from './util'
+import {
+  TwimlIncomingCallDataMapper,
+  TwimlInboundCallData,
+  InboundCallData
+} from './TwimlncomingCallDataMapper'
 const REGION = 'europe-west1'
 const app = express()
 app.use(bodyParser.json())
 admin.initializeApp()
+
+export const TWIML_DATA_MAPPER = new TwimlIncomingCallDataMapper()
+export const INBOUND_CALL_DATA_MAPPER = new InboundCallMapper()
+export const COMMAND_HANDLER = new CallHandler()
+
+/**
+ * General purpose endpoint for receiving twilio voice webhooks
+ */
+app.post('/voice', (req: express.Request, resp: express.Response) => {
+  resp.header('Content-Type', 'text/xml')
+
+  const numbersPreviouslyDialled: string[] = parseQueryStringToArray(req)
+
+  const tiwmlData: TwimlInboundCallData = TWIML_DATA_MAPPER.fromUnknown(
+    req.body // can throw Exception
+  )
+  const inboundCallData: InboundCallData = INBOUND_CALL_DATA_MAPPER.fromTwimlData(
+    tiwmlData,
+    numbersPreviouslyDialled
+  ) // can throw Exception
+
+  const command: BeginCallSequence = {
+    createdAt: new Date(),
+    data: inboundCallData
+  }
+  resp.status(200).send(COMMAND_HANDLER.inboundVoiceCall(command))
+})
 
 /**
  * Endpoint that returns call screening message to play to the receiver before
@@ -31,20 +54,6 @@ admin.initializeApp()
 //   const twiml = new TwimlDialer().screenResponse(new Pool(APP_DATA))
 //   resp.status(200).send(twiml.toString())
 // })
-
-/**
- * General purpose endpoint for receiving twilio voice webhooks
- */
-app.post('/voice', (req: express.Request, resp: express.Response) => {
-  resp.header('Content-Type', 'text/xml')
-
-  const command: BeginCallSequence = {
-    createdAt: new Date(),
-    data: new TwilioUtil().toInboundCallData(req.body as TwilioInboundCallData)
-  }
-
-  resp.status(200).send(new CallHandler().inboundVoiceCall(command))
-})
 
 // function shouldTryNext(status: string) {
 //   console.log(status)

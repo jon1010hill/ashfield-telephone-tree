@@ -1,10 +1,9 @@
-
-import { Pool } from "./Pool";
+import {Pool} from './Pool'
 
 /**
  * Represents the contract of a repository which provides pools of phone numbers to call, given a
  * specific community number.
  */
 export interface IPoolRepository {
-    findByNumberDialled(_number: string): Pool | undefined;
+  findByNumberDialled(dialledNumber: string): Pool
 }
