@@ -17,5 +17,7 @@ export const SERVICE_LOCATOR = {
   IPoolRepository: new JSONFilePoolRepository(APP_DATA),
   CallHandler: new CallHandler(),
   InboundCallMapper: new InboundCallMapper(),
-  TwimlCallMapper: new TwimlIncomingCallDataMapper()
+  get TwimlCallMapper() {
+    return new TwimlIncomingCallDataMapper(this.InboundCallMapper)
+  }
 }
