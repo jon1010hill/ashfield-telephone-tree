@@ -3,7 +3,7 @@ import * as bodyParser from 'body-parser'
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import {BeginCallSequence} from './command/types'
-import {parseQueryStringToArray} from './util'
+import {HttpRequestUtil} from './HttpRequestUtil'
 import {InboundCallData} from './TwimlncomingCallDataMapper'
 import {SERVICE_LOCATOR} from './types'
 const REGION = 'europe-west1'
@@ -18,7 +18,11 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
   console.log('Received POST request from Twilio')
   resp.header('Content-Type', 'text/xml')
 
-  const numbersPreviouslyDialled: string[] = parseQueryStringToArray(req)
+  const httpUtil = new HttpRequestUtil()
+
+  const numbersPreviouslyDialled: string[] = httpUtil.parseQueryStringToArray(
+    req
+  )
 
   const inboundCallData: InboundCallData = SERVICE_LOCATOR.TwimlIncomingCallDataMapper.fromUnknownToInboundCallData(
     req.body,
