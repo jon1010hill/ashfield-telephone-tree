@@ -1,21 +1,21 @@
 import googleLibphonenumber from 'google-libphonenumber'
 import {IDataMapper} from './IDataMapper'
 
-export type InboundCallData = {
+export type IncomingCallData = {
   readonly from: string
   readonly to: string
   readonly called: string
   readonly numbersPreviouslyDialled: string[]
 }
 
-export class InboundCallMapper implements IDataMapper<InboundCallData> {
-  fromUnknown(data: any): InboundCallData {
+export class IncomingCallDataMapper implements IDataMapper<IncomingCallData> {
+  fromUnknown(data: any): IncomingCallData {
     if (this.isValid(data)) {
       return data
     }
-    throw Error('data is not InboundCallData')
+    throw Error('data is not IncomingCallData')
   }
-  isValid(data: any): data is InboundCallData {
+  isValid(data: any): data is IncomingCallData {
     const phoneUtil = googleLibphonenumber.PhoneNumberUtil.getInstance()
     // uk only support for now
     const region = phoneUtil.getRegionCodeForCountryCode(44)

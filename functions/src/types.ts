@@ -1,6 +1,6 @@
-import * as db from './data/data.json'
+import * as db from './data/data.json' // todo source this from URL
 import {JSONFilePoolRepository} from './JSONFilePoolRepository'
-import {InboundCallMapper} from './InboundCallMapper'
+import {IncomingCallDataMapper} from './IncomingCallDataMapper'
 import {TwimlIncomingCallDataMapper} from './TwimlncomingCallDataMapper'
 import {CallHandler} from './CallHandler'
 export type AppData = typeof db
@@ -18,12 +18,12 @@ export const SERVICE_LOCATOR = {
     return new JSONFilePoolRepository(APP_DATA)
   },
   get CallHandler() {
-    return new CallHandler()
+    return new CallHandler(this.IPoolRepository)
   },
-  get InboundCallMapper() {
-    return new InboundCallMapper()
+  get IncomingCallDataMapper() {
+    return new IncomingCallDataMapper()
   },
-  get TwimlCallMapper() {
-    return new TwimlIncomingCallDataMapper(this.InboundCallMapper)
+  get TwimlIncomingCallDataMapper() {
+    return new TwimlIncomingCallDataMapper(this.IncomingCallDataMapper)
   }
 }

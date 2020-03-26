@@ -1,8 +1,8 @@
 import {IDataMapper} from './IDataMapper'
 import * as twimlInboundCallData from './twilioIncomingCallData.json'
-import {InboundCallMapper} from './InboundCallMapper'
+import {IncomingCallDataMapper} from './IncomingCallDataMapper'
 export const SAMPLE_TWILIO_DATA = twimlInboundCallData
-export type TwimlInboundCallData = typeof twimlInboundCallData
+export type TwimlIncomingCalData = typeof twimlInboundCallData
 
 export type InboundCallData = {
   readonly from: string
@@ -12,9 +12,9 @@ export type InboundCallData = {
 }
 
 export class TwimlIncomingCallDataMapper
-  implements IDataMapper<TwimlInboundCallData> {
-  private inboundCallMapper: InboundCallMapper
-  constructor(inboundCallDataMapper: InboundCallMapper) {
+  implements IDataMapper<TwimlIncomingCalData> {
+  private inboundCallMapper: IncomingCallDataMapper
+  constructor(inboundCallDataMapper: IncomingCallDataMapper) {
     this.inboundCallMapper = inboundCallDataMapper
   }
   fromUnknownToInboundCallData(
@@ -30,13 +30,13 @@ export class TwimlIncomingCallDataMapper
     })
   }
 
-  fromUnknown(data: any): TwimlInboundCallData {
+  fromUnknown(data: any): TwimlIncomingCalData {
     if (this.isValid(data)) {
       return data
     }
-    throw Error('data is not TwimlInboundCallData')
+    throw Error('data is not TwimlIncomingCallData')
   }
-  isValid(data: any): data is TwimlInboundCallData {
+  isValid(data: any): data is TwimlIncomingCalData {
     if (!(typeof data === 'object')) {
       return false
     }
@@ -51,7 +51,7 @@ export class TwimlIncomingCallDataMapper
         if (!data.hasOwnProperty(key)) {
           return false
         }
-        const coercedKey = key as keyof TwimlInboundCallData
+        const coercedKey = key as keyof TwimlIncomingCalData
         if (typeof data[key] !== typeof SAMPLE_TWILIO_DATA[coercedKey]) {
           return false
         }

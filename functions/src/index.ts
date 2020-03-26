@@ -20,7 +20,7 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
 
   const numbersPreviouslyDialled: string[] = parseQueryStringToArray(req)
 
-  const inboundCallData: InboundCallData = SERVICE_LOCATOR.TwimlCallMapper.fromUnknownToInboundCallData(
+  const inboundCallData: InboundCallData = SERVICE_LOCATOR.TwimlIncomingCallDataMapper.fromUnknownToInboundCallData(
     req.body,
     numbersPreviouslyDialled
   ) // can throw Exception
@@ -29,7 +29,7 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
     createdAt: new Date(),
     data: inboundCallData
   }
-  resp.status(200).send(SERVICE_LOCATOR.CallHandler.inboundVoiceCall(command))
+  resp.status(200).send(SERVICE_LOCATOR.CallHandler.incomingVoiceCall(command))
 })
 
 /**

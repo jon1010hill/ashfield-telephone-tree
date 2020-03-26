@@ -1,13 +1,15 @@
 import {BeginCallSequence} from './command/types'
 import {Pool} from './Pool'
-import {SERVICE_LOCATOR} from './types'
 import {TwimlVoiceResponseFactory} from './TwimlVoiceResponseFactory'
+import {IPoolRepository} from './IPoolRepository'
 export class CallHandler {
-  inboundVoiceCall(command: BeginCallSequence): string {
-    console.log('handle inboundVoiceCall', command)
-    const pool: Pool = SERVICE_LOCATOR.IPoolRepository.findByNumberDialled(
-      command.data.called
-    )
+  private readonly poolRepo: IPoolRepository
+  constructor(poolRepo: IPoolRepository) {
+    this.poolRepo = poolRepo
+  }
+  incomingVoiceCall(command: BeginCallSequence): string {
+    console.log('handle incomingVoiceCall', command)
+    const pool: Pool = this.poolRepo.findByNumberDialled(command.data.called)
 
     const factory = new TwimlVoiceResponseFactory(pool, command.data.from)
     const response = factory.createNextResponse(
