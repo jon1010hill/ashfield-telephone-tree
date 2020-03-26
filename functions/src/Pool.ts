@@ -1,5 +1,5 @@
 import {PoolData, Messages, Person} from './types'
-
+// TODO consistent nomenclature
 export class Pool {
   private data: PoolData
 
@@ -8,7 +8,7 @@ export class Pool {
   }
 
   getCommunityName(): string {
-    return this.data.name
+    return this.data.communityName
   }
 
   getNumbers(): string[] {

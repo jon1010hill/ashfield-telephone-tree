@@ -16,8 +16,7 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
     return new twilio.twiml.VoiceResponse().toString()
   }
 
-  private say(data: SayData): string {
-    const twiml = new twilio.twiml.VoiceResponse()
+  private say(data: SayData, twiml: VoiceResponse): string {
     twiml.say(
       // Intro message
       {voice: this.pool.getVoice() as VoiceResponse.SayVoice},
@@ -26,9 +25,7 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
     return twiml.toString()
   }
 
-  private dial(data: DialData): string {
-    const twiml = new twilio.twiml.VoiceResponse()
-
+  private dial(data: DialData, twiml: VoiceResponse): string {
     const options = {
       timeout: this.pool.getRingTimeOut(),
       timeLimit: this.pool.getMaxCallDuration(),
@@ -40,6 +37,7 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
   }
 
   createNextResponse(previoulyDialledNumbers: string[]): string {
+    const twiml = new twilio.twiml.VoiceResponse()
     const person: Person | undefined = this.pool.getNextPerson(
       previoulyDialledNumbers,
       this.caller
@@ -49,24 +47,30 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
       return this.emptyResponse().toString()
     }
     const messages = this.pool.getBespokeMessagesForPerson(person)
-    const dialInstruction = this.dial({to: person.number})
+    const dialInstruction = this.dial({to: person.number}, twiml)
 
     if (previoulyDialledNumbers.length === 0) {
       console.log('No previous used numbers, this is the first person the pool')
       // first call attempt
-      const sayInstruction = this.say({
-        message: messages.intro,
-        to: person.number
-      })
+      const sayInstruction = this.say(
+        {
+          message: messages.intro,
+          to: person.number
+        },
+        twiml
+      )
       //
 
       return sayInstruction + dialInstruction
     }
     console.log('Not first number in the pool')
-    const sayInstruction = this.say({
-      message: messages.next,
-      to: person.number
-    })
+    const sayInstruction = this.say(
+      {
+        message: messages.next,
+        to: person.number
+      },
+      twiml
+    )
     return sayInstruction + dialInstruction
   }
 }

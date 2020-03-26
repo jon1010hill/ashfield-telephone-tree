@@ -8,7 +8,6 @@ import {InboundCallMapper} from './InboundCallMapper'
 import {parseQueryStringToArray} from './util'
 import {
   TwimlIncomingCallDataMapper,
-  TwimlInboundCallData,
   InboundCallData
 } from './TwimlncomingCallDataMapper'
 const REGION = 'europe-west1'
@@ -16,7 +15,7 @@ const app = express()
 app.use(bodyParser.json())
 admin.initializeApp()
 
-export const TWIML_DATA_MAPPER = new TwimlIncomingCallDataMapper()
+export const TWIML_CALL_DATA_MAPPER = new TwimlIncomingCallDataMapper()
 export const INBOUND_CALL_DATA_MAPPER = new InboundCallMapper()
 export const COMMAND_HANDLER = new CallHandler()
 
@@ -29,11 +28,8 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
 
   const numbersPreviouslyDialled: string[] = parseQueryStringToArray(req)
 
-  const tiwmlData: TwimlInboundCallData = TWIML_DATA_MAPPER.fromUnknown(
-    req.body // can throw Exception
-  )
-  const inboundCallData: InboundCallData = INBOUND_CALL_DATA_MAPPER.fromTwimlData(
-    tiwmlData,
+  const inboundCallData: InboundCallData = TWIML_CALL_DATA_MAPPER.fromUnknownToInboundCallData(
+    req.body,
     numbersPreviouslyDialled
   ) // can throw Exception
 

@@ -1,6 +1,7 @@
 import {IDataMapper} from './IDataMapper'
 import * as twimlInboundCallData from './twilioIncomingCallData.json'
-
+import {INBOUND_CALL_DATA_MAPPER} from './index'
+export const SAMPLE_TWILIO_DATA = twimlInboundCallData
 export type TwimlInboundCallData = typeof twimlInboundCallData
 
 export type InboundCallData = {
@@ -12,6 +13,19 @@ export type InboundCallData = {
 
 export class TwimlIncomingCallDataMapper
   implements IDataMapper<TwimlInboundCallData> {
+  fromUnknownToInboundCallData(
+    data: any,
+    numbersPreviouslyDialled: string[]
+  ): InboundCallData {
+    const twimlData = this.fromUnknown(data)
+    return INBOUND_CALL_DATA_MAPPER.fromUnknown({
+      numbersPreviouslyDialled,
+      from: twimlData.From,
+      to: twimlData.To,
+      called: twimlData.Called
+    })
+  }
+
   fromUnknown(data: any): TwimlInboundCallData {
     if (this.isValid(data)) {
       return data
@@ -22,19 +36,25 @@ export class TwimlIncomingCallDataMapper
     if (!(typeof data === 'object')) {
       return false
     }
-    for (const key of Object.keys(twimlInboundCallData)) {
+
+    console.log(Object.keys(data))
+    for (const key of Object.keys(SAMPLE_TWILIO_DATA)) {
       if (twimlInboundCallData.hasOwnProperty(key)) {
+        if (key === 'default') {
+          // todo what is the key called default?
+          continue
+        }
         if (!data.hasOwnProperty(key)) {
           return false
         }
         const coercedKey = key as keyof TwimlInboundCallData
-        if (typeof data[key] !== typeof twimlInboundCallData[coercedKey]) {
+        if (typeof data[key] !== typeof SAMPLE_TWILIO_DATA[coercedKey]) {
           return false
         }
       }
     }
-    return false
+    return true
   }
 }
 
-export const INBOUND_CALL_MAPPER = new TwimlIncomingCallDataMapper()
+export const TWIML_DATA_MAPPER = new TwimlIncomingCallDataMapper()

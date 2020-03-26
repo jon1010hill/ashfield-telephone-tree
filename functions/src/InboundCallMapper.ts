@@ -1,6 +1,5 @@
 import googleLibphonenumber from 'google-libphonenumber'
 import {IDataMapper} from './IDataMapper'
-import {TwimlInboundCallData} from './TwimlncomingCallDataMapper'
 
 export type InboundCallData = {
   readonly from: string
@@ -10,17 +9,6 @@ export type InboundCallData = {
 }
 
 export class InboundCallMapper implements IDataMapper<InboundCallData> {
-  fromTwimlData(
-    data: TwimlInboundCallData,
-    numbersPreviouslyDialled: string[]
-  ): InboundCallData {
-    return this.fromUnknown({
-      numbersPreviouslyDialled,
-      from: data.From,
-      to: data.To,
-      called: data.Called
-    })
-  }
   fromUnknown(data: any): InboundCallData {
     if (this.isValid(data)) {
       return data
@@ -45,4 +33,4 @@ export class InboundCallMapper implements IDataMapper<InboundCallData> {
   }
 }
 
-export const INBOUND_CALL_MAPPER = new InboundCallMapper()
+export const INBOUND_CALL_DATA_MAPPER = new InboundCallMapper()

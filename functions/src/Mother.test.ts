@@ -12,7 +12,7 @@ export function getTestPool(
   return {
     ringTimeout: 8,
     maxCallDuration: 600,
-    name: communityName ? communityName : 'Smith Street',
+    communityName: communityName ? communityName : 'Smith Street',
     number: callerNumber ? callerNumber : '+44xxxxxxxxxx',
     voice: 'Poly.Brian',
     screen: 'You are about to receive a call',
@@ -44,7 +44,7 @@ export function getTestPoolWithDuplicateNumbers(): PoolData {
   return {
     ringTimeout: 8,
     maxCallDuration: 600,
-    name: 'Smith Street',
+    communityName: 'Smith Street',
     number: '+44xxxxxxxxxx',
     voice: 'Poly.Brian',
     screen: 'You are about to receive a call',
