@@ -36,16 +36,4 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
     .send(SERVICE_LOCATOR.getCallHandler(httpUtil).incomingVoiceCall(command))
 })
 
-/**
- * Endpoint that returns call screening message to play to the receiver before
- * the call connects
- *
- */
-// app.post('/voice/screen', (req: express.Request, resp: express.Response) => {
-//   resp.header('Content-Type', 'text/xml')
-//   console.log(`URL Called ${getCurrentUrl(req)}`)
-//   const twiml = new TwimlDialer().screenResponse(new Pool(APP_DATA))
-//   resp.status(200).send(twiml.toString())
-// })
-
 exports.ashfield = functions.region(REGION).https.onRequest(app)
