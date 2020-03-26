@@ -1,31 +1,33 @@
 import {IDataMapper} from './IDataMapper'
 import * as twimlInboundCallData from './twilioIncomingCallData.json'
-import {IncomingCallDataMapper} from './IncomingCallDataMapper'
+import {
+  IncomingCallDataMapper,
+  IncomingCallData
+} from './IncomingCallDataMapper'
 export const SAMPLE_TWILIO_DATA = twimlInboundCallData
 export type TwimlIncomingCalData = typeof twimlInboundCallData
 
-export type InboundCallData = {
+export type TwimlIncomingCallData = {
   readonly from: string
   readonly to: string
   readonly called: string
-  readonly numbersPreviouslyDialled: string[]
+  readonly numbersPreviouslyCalled: string[]
 }
 
 export class TwimlIncomingCallDataMapper
   implements IDataMapper<TwimlIncomingCalData> {
-  private inboundCallMapper: IncomingCallDataMapper
-  constructor(inboundCallDataMapper: IncomingCallDataMapper) {
-    this.inboundCallMapper = inboundCallDataMapper
+  private incomingCallDataMapper: IncomingCallDataMapper
+  constructor(incomingCallDataMapper: IncomingCallDataMapper) {
+    this.incomingCallDataMapper = incomingCallDataMapper
   }
-  fromUnknownToInboundCallData(
+  fromUnknownToIncomingCallData(
     data: any,
-    numbersPreviouslyDialled: string[]
-  ): InboundCallData {
+    numbersPreviouslyCalled: string[]
+  ): IncomingCallData {
     const twimlData = this.fromUnknown(data)
-    return this.inboundCallMapper.fromUnknown({
-      numbersPreviouslyDialled,
+    return this.incomingCallDataMapper.fromUnknown({
+      numbersPreviouslyCalled,
       from: twimlData.From,
-      to: twimlData.To,
       called: twimlData.Called
     })
   }

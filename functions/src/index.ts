@@ -4,8 +4,8 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import {BeginCallSequence} from './command/types'
 import {HttpRequestUtil} from './HttpRequestUtil'
-import {InboundCallData} from './TwimlncomingCallDataMapper'
 import {SERVICE_LOCATOR} from './types'
+import {IncomingCallData} from './IncomingCallDataMapper'
 const REGION = 'europe-west1'
 const app = express()
 app.use(bodyParser.json())
@@ -18,22 +18,22 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
   console.log('Received POST request from Twilio')
   resp.header('Content-Type', 'text/xml')
 
-  const httpUtil = new HttpRequestUtil()
+  const httpUtil = new HttpRequestUtil(req)
 
-  const numbersPreviouslyDialled: string[] = httpUtil.parseQueryStringToArray(
-    req
-  )
+  const numbersPreviouslyCalled: string[] = httpUtil.parseQueryStringToArray()
 
-  const inboundCallData: InboundCallData = SERVICE_LOCATOR.TwimlIncomingCallDataMapper.fromUnknownToInboundCallData(
+  const incomingCallData: IncomingCallData = SERVICE_LOCATOR.TwimlIncomingCallDataMapper.fromUnknownToIncomingCallData(
     req.body,
-    numbersPreviouslyDialled
+    numbersPreviouslyCalled
   ) // can throw Exception
 
   const command: BeginCallSequence = {
     createdAt: new Date(),
-    data: inboundCallData
+    data: incomingCallData
   }
-  resp.status(200).send(SERVICE_LOCATOR.CallHandler.incomingVoiceCall(command))
+  resp
+    .status(200)
+    .send(SERVICE_LOCATOR.getCallHandler(httpUtil).incomingVoiceCall(command))
 })
 
 /**

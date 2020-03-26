@@ -3,9 +3,9 @@ import {IDataMapper} from './IDataMapper'
 
 export type IncomingCallData = {
   readonly from: string
-  readonly to: string
   readonly called: string
-  readonly numbersPreviouslyDialled: string[]
+  readonly numbersPreviouslyCalled: string[]
+  readonly to?: string // do we need this?
 }
 
 export class IncomingCallDataMapper implements IDataMapper<IncomingCallData> {
@@ -20,14 +20,12 @@ export class IncomingCallDataMapper implements IDataMapper<IncomingCallData> {
     // uk only support for now
     const region = phoneUtil.getRegionCodeForCountryCode(44)
     const fromNumber = phoneUtil.parse(data.from)
-    const toNumber = phoneUtil.parse(data.to)
     const calledNumber = phoneUtil.parse(data.called)
 
     return (
       typeof data === 'object' &&
-      Array.isArray(data.numbersPreviouslyDialled) &&
+      Array.isArray(data.numbersPreviouslyCalled) &&
       phoneUtil.isValidNumberForRegion(fromNumber, region) &&
-      phoneUtil.isValidNumberForRegion(toNumber, region) &&
       phoneUtil.isValidNumberForRegion(calledNumber, region)
     )
   }

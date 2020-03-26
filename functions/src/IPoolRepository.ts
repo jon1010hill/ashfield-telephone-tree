@@ -5,5 +5,5 @@ import {Pool} from './Pool'
  * specific community number.
  */
 export interface IPoolRepository {
-  findByNumberDialled(dialledNumber: string): Pool
+  findByNumberCalled(calledNumber: string): Pool
 }

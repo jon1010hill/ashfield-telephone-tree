@@ -1,3 +1,5 @@
+import {UrlBuilder} from './HttpRequestUtil'
+
 export type SayData = {
   readonly to: string
   readonly message: string
@@ -10,5 +12,8 @@ export type DialData = {
 }
 
 export interface IVoiceResponseFactory {
-  createNextResponse(previouslyDialledNumbers: string[]): string
+  createNextResponse(
+    previouslyDialledNumbers: string[],
+    urlBuilder: UrlBuilder
+  ): string
 }

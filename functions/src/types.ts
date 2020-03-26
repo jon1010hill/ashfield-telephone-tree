@@ -3,6 +3,7 @@ import {JSONFilePoolRepository} from './JSONFilePoolRepository'
 import {IncomingCallDataMapper} from './IncomingCallDataMapper'
 import {TwimlIncomingCallDataMapper} from './TwimlncomingCallDataMapper'
 import {CallHandler} from './CallHandler'
+import {UrlBuilder} from './HttpRequestUtil'
 export type AppData = typeof db
 export const APP_DATA: AppData = db
 export const API_DATA: Api = db.api
@@ -17,8 +18,8 @@ export const SERVICE_LOCATOR = {
   get IPoolRepository() {
     return new JSONFilePoolRepository(APP_DATA)
   },
-  get CallHandler() {
-    return new CallHandler(this.IPoolRepository)
+  getCallHandler(urlBuilder: UrlBuilder) {
+    return new CallHandler(this.IPoolRepository, urlBuilder)
   },
   get IncomingCallDataMapper() {
     return new IncomingCallDataMapper()

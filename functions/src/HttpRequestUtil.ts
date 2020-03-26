@@ -2,37 +2,50 @@ import * as querystring from 'querystring'
 import * as express from 'express'
 import {API_DATA} from './types'
 
-export class HttpRequestUtil {
-  parseQueryStringToArray(req: express.Request) {
-    const numbersTriedStr = req.query.numbersTried
-      ? `${req.query.numbersTried}`
+export interface UrlBuilder {
+  getNextActionUrl(thisDialedNumber?: string): string
+}
+export class HttpRequestUtil implements UrlBuilder {
+  private readonly req: express.Request
+  constructor(req: express.Request) {
+    this.req = req
+  }
+  parseQueryStringToArray() {
+    const numbersTriedStr = this.req.query.numbersTried
+      ? `${this.req.query.numbersTried}`
       : ''
     const numbers = numbersTriedStr.split(',').filter(i => i)
     return numbers
   }
 
-  getCurrentUrl(req: express.Request) {
-    if (req.host === 'localhost' || req.host.endsWith('ngrok.io')) {
-      // tslint:disable-next-line: prefer-template
-      return req.protocol + '://' + req.get('host') + req.originalUrl
+  getCurrentUrl() {
+    if (this.req.host === 'localhost' || this.req.host.endsWith('ngrok.io')) {
+      return (
+        // tslint:disable-next-line: prefer-template
+        this.req.protocol + '://' + this.req.get('host') + this.req.originalUrl
+      )
     }
 
-    return API_DATA.baseUri + req.originalUrl
+    return API_DATA.baseUri + this.req.originalUrl
   }
 
-  getCallScreenUrl(req: express.Request) {
-    if (req.host === 'localhost') {
+  getCallScreenUrl() {
+    if (this.req.host === 'localhost') {
       // tslint:disable-next-line: prefer-template
-      return req.protocol + '://' + req.get('host') + '/voice/screen'
+      return this.req.protocol + '://' + this.req.get('host') + '/voice/screen'
     }
     // tslint:disable-next-line: prefer-template
     return API_DATA.baseUri + '/voice/screen'
   }
 
-  getFirebaseFunctionCurrentUrl(req: express.Request) {
+  getFirebaseFunctionCurrentUrl() {
     return (
       // tslint:disable-next-line: prefer-template
-      req.protocol + '://' + process.env.FUNCTION_REGION + '-' + req.originalUrl
+      this.req.protocol +
+      '://' +
+      process.env.FUNCTION_REGION +
+      '-' +
+      this.req.originalUrl
     )
   }
 
@@ -40,8 +53,8 @@ export class HttpRequestUtil {
     return querystring.escape(numbers.join(','))
   }
 
-  getNextActionUrl(req: express.Request, thisDialedNumber?: string): string {
-    const currentUrl = this.getCurrentUrl(req)
+  getNextActionUrl(thisDialedNumber?: string): string {
+    const currentUrl = this.getCurrentUrl()
     if (currentUrl.indexOf('numbersTried=') !== -1) {
       return (
         currentUrl +
@@ -55,7 +68,7 @@ export class HttpRequestUtil {
     return (
       // tslint:disable-next-line: prefer-template
       currentUrl +
-      this.getQueryStringFromArray(this.parseQueryStringToArray(req)) +
+      this.getQueryStringFromArray(this.parseQueryStringToArray()) +
       '?numbersTried=' +
       (undefined !== thisDialedNumber
         ? this.getQueryStringFromArray([thisDialedNumber!])

@@ -3,29 +3,31 @@ import {IVoiceResponseFactory, SayData, DialData} from './IVoiceResponseFactory'
 import * as twilio from 'twilio'
 import VoiceResponse from 'twilio/lib/twiml/VoiceResponse'
 import {Person} from './types'
+import {IncomingCallData} from './IncomingCallDataMapper'
+import {UrlBuilder} from './HttpRequestUtil'
 export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
   private readonly pool: Pool
-  private readonly caller: string
+  private readonly incomingCallData: IncomingCallData
 
-  constructor(pool: Pool, caller: string) {
+  constructor(pool: Pool, incomingCallData: IncomingCallData) {
     this.pool = pool
-    this.caller = caller
+    this.incomingCallData = incomingCallData
   }
 
   private emptyResponse() {
     return new twilio.twiml.VoiceResponse().toString()
   }
 
-  private say(data: SayData, twiml: VoiceResponse): string {
+  private say(data: SayData, twiml: VoiceResponse): VoiceResponse {
     twiml.say(
       // Intro message
       {voice: this.pool.getVoice() as VoiceResponse.SayVoice},
       data.message
     )
-    return twiml.toString()
+    return twiml
   }
 
-  private dial(data: DialData, twiml: VoiceResponse): string {
+  private dial(data: DialData, twiml: VoiceResponse): VoiceResponse {
     const options = {
       timeout: this.pool.getRingTimeOut(),
       timeLimit: this.pool.getMaxCallDuration(),
@@ -33,26 +35,29 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
       answerOnBridge: true // todo test this with and without
     }
     twiml.dial(options).number(data.to)
-    return twiml.toString()
+    return twiml
   }
 
-  createNextResponse(previoulyDialledNumbers: string[]): string {
-    const twiml = new twilio.twiml.VoiceResponse()
+  createNextResponse(
+    previoulyDialledNumbers: string[],
+    urlBuilder: UrlBuilder
+  ): string {
+    let twiml = new twilio.twiml.VoiceResponse()
     const person: Person | undefined = this.pool.getNextPerson(
       previoulyDialledNumbers,
-      this.caller
+      this.incomingCallData.from
     )
     if (!person) {
       console.log('No more people left in pool')
       return this.emptyResponse().toString()
     }
     const messages = this.pool.getBespokeMessagesForPerson(person)
-    const dialInstruction = this.dial({to: person.number}, twiml)
-
     if (previoulyDialledNumbers.length === 0) {
-      console.log('No previous used numbers, this is the first person the pool')
+      console.log(
+        'No previous used numbers, this is the first person in the pool'
+      )
       // first call attempt
-      const sayInstruction = this.say(
+      twiml = this.say(
         {
           message: messages.intro,
           to: person.number
@@ -60,17 +65,30 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
         twiml
       )
       //
-
-      return sayInstruction + dialInstruction
+      twiml = this.dial(
+        {
+          to: person.number,
+          actionUrl: urlBuilder.getNextActionUrl(person.number)
+        },
+        twiml
+      )
+      return twiml.toString()
     }
     console.log('Not first number in the pool')
-    const sayInstruction = this.say(
+    twiml = this.say(
       {
         message: messages.next,
         to: person.number
       },
       twiml
     )
-    return sayInstruction + dialInstruction
+    twiml = this.dial(
+      {
+        to: person.number,
+        actionUrl: urlBuilder.getNextActionUrl(person.number)
+      },
+      twiml
+    )
+    return twiml.toString()
   }
 }

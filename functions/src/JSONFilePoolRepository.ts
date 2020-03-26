@@ -14,9 +14,9 @@ export class JSONFilePoolRepository implements IPoolRepository {
     this.db = JSON.parse(JSON.stringify(appData))
   }
 
-  findByNumberDialled(numberDialled: string): Pool {
+  findByNumberCalled(numberCalled: string): Pool {
     const poolData: PoolData[] = this.db.pools.filter(
-      pool => pool.number === numberDialled
+      pool => pool.number === numberCalled
     )
     if (poolData.length > 1) {
       throw new Error('Duplicate data error')
