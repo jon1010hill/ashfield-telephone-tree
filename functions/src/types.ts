@@ -14,9 +14,15 @@ export type Messages = typeof dataSample.messages
 export type Api = typeof db.api
 
 export const SERVICE_LOCATOR = {
-  IPoolRepository: new JSONFilePoolRepository(APP_DATA),
-  CallHandler: new CallHandler(),
-  InboundCallMapper: new InboundCallMapper(),
+  get IPoolRepository() {
+    return new JSONFilePoolRepository(APP_DATA)
+  },
+  get CallHandler() {
+    return new CallHandler()
+  },
+  get InboundCallMapper() {
+    return new InboundCallMapper()
+  },
   get TwimlCallMapper() {
     return new TwimlIncomingCallDataMapper(this.InboundCallMapper)
   }

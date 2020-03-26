@@ -1,6 +1,5 @@
 import {IDataMapper} from './IDataMapper'
 import * as twimlInboundCallData from './twilioIncomingCallData.json'
-import {SERVICE_LOCATOR} from './types'
 import {InboundCallMapper} from './InboundCallMapper'
 export const SAMPLE_TWILIO_DATA = twimlInboundCallData
 export type TwimlInboundCallData = typeof twimlInboundCallData
