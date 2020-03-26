@@ -1,6 +1,6 @@
 import {IDataMapper} from './IDataMapper'
 import * as twimlInboundCallData from './twilioIncomingCallData.json'
-import {INBOUND_CALL_DATA_MAPPER} from './index'
+import {SERVICE_LOCATOR} from './types'
 export const SAMPLE_TWILIO_DATA = twimlInboundCallData
 export type TwimlInboundCallData = typeof twimlInboundCallData
 
@@ -18,7 +18,7 @@ export class TwimlIncomingCallDataMapper
     numbersPreviouslyDialled: string[]
   ): InboundCallData {
     const twimlData = this.fromUnknown(data)
-    return INBOUND_CALL_DATA_MAPPER.fromUnknown({
+    return SERVICE_LOCATOR.InboundCallMapper.fromUnknown({
       numbersPreviouslyDialled,
       from: twimlData.From,
       to: twimlData.To,
@@ -56,5 +56,3 @@ export class TwimlIncomingCallDataMapper
     return true
   }
 }
-
-export const TWIML_DATA_MAPPER = new TwimlIncomingCallDataMapper()

@@ -1,12 +1,11 @@
 import 'mocha'
 import {expect} from 'chai'
-import {InboundCallMapper} from './InboundCallMapper'
 import {
   InboundCallData,
   TwimlInboundCallData,
-  SAMPLE_TWILIO_DATA,
-  TwimlIncomingCallDataMapper
+  SAMPLE_TWILIO_DATA
 } from './TwimlncomingCallDataMapper'
+import {SERVICE_LOCATOR} from './types'
 describe('data mapping and validation tests', () => {
   it('test valid UK numbers do not throw error', () => {
     const unknown: InboundCallData = {
@@ -15,7 +14,8 @@ describe('data mapping and validation tests', () => {
       called: '+447766222111',
       numbersPreviouslyDialled: []
     }
-    expect(new InboundCallMapper().fromUnknown(unknown)).does.not.throw
+    expect(SERVICE_LOCATOR.InboundCallMapper.fromUnknown(unknown)).does.not
+      .throw
   })
   it('test undefined numbersPreviouslyDialled throws error', () => {
     const unknown: Omit<InboundCallData, 'numbersPreviouslyDialled'> = {
@@ -23,7 +23,7 @@ describe('data mapping and validation tests', () => {
       to: '+447766111222',
       called: '+447766111222'
     }
-    expect(() => new InboundCallMapper().fromUnknown(unknown)).throw(
+    expect(() => SERVICE_LOCATOR.InboundCallMapper.fromUnknown(unknown)).throw(
       'data is not InboundCallData'
     )
   })
@@ -34,14 +34,13 @@ describe('data mapping and validation tests', () => {
       called: '+447766111222',
       numbersPreviouslyDialled: []
     }
-    expect(() => new InboundCallMapper().fromUnknown(unknown)).throw(
+    expect(() => SERVICE_LOCATOR.InboundCallMapper.fromUnknown(unknown)).throw(
       'data is not InboundCallData'
     )
   })
 
   it('test example twilio data does not throw error', () => {
     const unknown: TwimlInboundCallData = SAMPLE_TWILIO_DATA
-    expect(new TwimlIncomingCallDataMapper().fromUnknown(unknown)).does.not
-      .throw
+    expect(SERVICE_LOCATOR.TwimlCallMapper.fromUnknown(unknown)).does.not.throw
   })
 })

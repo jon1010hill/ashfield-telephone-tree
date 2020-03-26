@@ -1,6 +1,7 @@
 import * as chai from 'chai'
 import {PoolData, Api} from './types'
 import {JSONFilePoolRepository} from './JSONFilePoolRepository'
+
 import {getTestPool, getApi} from './Mother.test'
 
 import 'mocha'

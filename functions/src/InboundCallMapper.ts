@@ -32,5 +32,3 @@ export class InboundCallMapper implements IDataMapper<InboundCallData> {
     )
   }
 }
-
-export const INBOUND_CALL_DATA_MAPPER = new InboundCallMapper()
