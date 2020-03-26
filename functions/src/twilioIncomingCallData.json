@@ -14,6 +14,8 @@
   "CallerState": "",
   "CallerZip": "",
   "Direction": "inbound",
+  "DialCallSid": "CAXXXXX",
+  "DialCallStatus": "no-answer",
   "From": "+447766111222",
   "FromCity": "",
   "FromCountry": "GB",

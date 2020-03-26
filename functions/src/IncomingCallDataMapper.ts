@@ -6,6 +6,7 @@ export type IncomingCallData = {
   readonly called: string
   readonly numbersPreviouslyCalled: string[]
   readonly to?: string // do we need this?
+  readonly dialStatus?: string // todo narrow this
 }
 
 export class IncomingCallDataMapper implements IDataMapper<IncomingCallData> {
@@ -25,6 +26,8 @@ export class IncomingCallDataMapper implements IDataMapper<IncomingCallData> {
     return (
       typeof data === 'object' &&
       Array.isArray(data.numbersPreviouslyCalled) &&
+      (typeof data.dialStatus === 'string' ||
+        typeof data.dialStatus === 'undefined') &&
       phoneUtil.isValidNumberForRegion(fromNumber, region) &&
       phoneUtil.isValidNumberForRegion(calledNumber, region)
     )

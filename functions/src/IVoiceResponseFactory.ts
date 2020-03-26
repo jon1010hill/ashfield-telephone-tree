@@ -13,7 +13,7 @@ export type DialData = {
 
 export interface IVoiceResponseFactory {
   createNextResponse(
-    previouslyDialledNumbers: string[],
+    previouslyCalledNumbers: string[],
     urlBuilder: UrlBuilder
   ): string
 }

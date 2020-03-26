@@ -8,7 +8,7 @@ import 'mocha'
 import {Pool} from './Pool'
 
 describe('PoolRepository tests', () => {
-  it('test findByNumberDialled returns expected pool', () => {
+  it('test findByNumberCalled returns expected pool', () => {
     const api: Api = getApi()
     const samplePoolData: PoolData[] = [
       getTestPool('Project A', '01234'),

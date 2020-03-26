@@ -39,20 +39,28 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
   }
 
   createNextResponse(
-    previoulyDialledNumbers: string[],
+    previoulyCalledNumbers: string[],
     urlBuilder: UrlBuilder
   ): string {
     let twiml = new twilio.twiml.VoiceResponse()
     const person: Person | undefined = this.pool.getNextPerson(
-      previoulyDialledNumbers,
+      previoulyCalledNumbers,
       this.incomingCallData.from
     )
+    if (!this.shouldTryNext(this.incomingCallData.dialStatus)) {
+      console.log(
+        `DialCallStatus ${this.incomingCallData.dialStatus} prehibits next action`
+      )
+      return this.emptyResponse().toString()
+    }
+
     if (!person) {
       console.log('No more people left in pool')
       return this.emptyResponse().toString()
     }
+
     const messages = this.pool.getBespokeMessagesForPerson(person)
-    if (previoulyDialledNumbers.length === 0) {
+    if (previoulyCalledNumbers.length === 0) {
       console.log(
         'No previous used numbers, this is the first person in the pool'
       )
@@ -90,5 +98,24 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
       twiml
     )
     return twiml.toString()
+  }
+
+  shouldTryNext(status?: string) {
+    switch (status) {
+      case undefined:
+        return true
+      case 'no-answer':
+        return true
+      case 'failed':
+        return true
+      case 'busy':
+        return true
+      case 'completed':
+        return false
+      case 'answered':
+        return false
+      default:
+        return false
+    }
   }
 }

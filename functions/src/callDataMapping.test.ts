@@ -12,16 +12,18 @@ describe('data mapping and validation tests', () => {
       from: '+447766222111',
       to: '+447766222111',
       called: '+447766222111',
-      numbersPreviouslyCalled: []
+      numbersPreviouslyCalled: [],
+      dialStatus: 'ringing'
     }
     expect(SERVICE_LOCATOR.IncomingCallDataMapper.fromUnknown(unknown)).does.not
       .throw
   })
-  it('test undefined numbersPreviouslyDialled throws error', () => {
+  it('test undefined numbersPreviouslyCalled throws error', () => {
     const unknown: Omit<IncomingCallData, 'numbersPreviouslyCalled'> = {
       from: '+447766111222',
       to: '+447766111222',
-      called: '+447766111222'
+      called: '+447766111222',
+      dialStatus: 'ringing'
     }
     expect(() =>
       SERVICE_LOCATOR.IncomingCallDataMapper.fromUnknown(unknown)
@@ -32,7 +34,8 @@ describe('data mapping and validation tests', () => {
       from: '+447766111', // short
       to: '+447766111222',
       called: '+447766111222',
-      numbersPreviouslyCalled: []
+      numbersPreviouslyCalled: [],
+      dialStatus: 'ringing'
     }
     expect(() =>
       SERVICE_LOCATOR.IncomingCallDataMapper.fromUnknown(unknown)

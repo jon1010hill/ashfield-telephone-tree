@@ -17,8 +17,8 @@ admin.initializeApp()
 app.post('/voice', (req: express.Request, resp: express.Response) => {
   console.log('Received POST request from Twilio')
   resp.header('Content-Type', 'text/xml')
-
   const httpUtil = new HttpRequestUtil(req)
+  console.log(`URL Called: ${httpUtil.getCurrentUrl()}`)
 
   const numbersPreviouslyCalled: string[] = httpUtil.parseQueryStringToArray()
 
@@ -47,25 +47,5 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
 //   const twiml = new TwimlDialer().screenResponse(new Pool(APP_DATA))
 //   resp.status(200).send(twiml.toString())
 // })
-
-// function shouldTryNext(status: string) {
-//   console.log(status)
-//   switch (status) {
-//     case undefined:
-//       return true
-//     case 'no-answer':
-//       return true
-//     case 'failed':
-//       return true
-//     case 'busy':
-//       return true
-//     case 'completed':
-//       return false
-//     case 'answered':
-//       return false
-//     default:
-//       return false
-//   }
-// }
 
 exports.ashfield = functions.region(REGION).https.onRequest(app)

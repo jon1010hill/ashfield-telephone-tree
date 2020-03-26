@@ -8,6 +8,7 @@ export type AppData = typeof db
 export const APP_DATA: AppData = db
 export const API_DATA: Api = db.api
 
+// build types from sample data
 const dataSample = db.pools[0]
 export type PoolData = typeof dataSample
 export type Person = typeof dataSample.people[0]
@@ -19,6 +20,7 @@ export const SERVICE_LOCATOR = {
     return new JSONFilePoolRepository(APP_DATA)
   },
   getCallHandler(urlBuilder: UrlBuilder) {
+    // todo review
     return new CallHandler(this.IPoolRepository, urlBuilder)
   },
   get IncomingCallDataMapper() {

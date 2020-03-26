@@ -28,7 +28,8 @@ export class TwimlIncomingCallDataMapper
     return this.incomingCallDataMapper.fromUnknown({
       numbersPreviouslyCalled,
       from: twimlData.From,
-      called: twimlData.Called
+      called: twimlData.Called,
+      dialStatus: twimlData.DialCallStatus
     })
   }
 
@@ -45,8 +46,11 @@ export class TwimlIncomingCallDataMapper
 
     for (const key of Object.keys(SAMPLE_TWILIO_DATA)) {
       if (twimlInboundCallData.hasOwnProperty(key)) {
-        if (key === 'default') {
-          // todo what is the key called default?
+        if (
+          key === 'default' || // todo what is the key called default? restest this
+          key === 'DialCallStatus' || // optional, only appears in action requests
+          key === 'DialCallSid' // as above
+        ) {
           continue
         }
         if (!data.hasOwnProperty(key)) {
