@@ -41,7 +41,6 @@ export class TwimlIncomingCallDataMapper
       return false
     }
 
-    console.log(Object.keys(data))
     for (const key of Object.keys(SAMPLE_TWILIO_DATA)) {
       if (twimlInboundCallData.hasOwnProperty(key)) {
         if (key === 'default') {
