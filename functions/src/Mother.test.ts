@@ -1,4 +1,5 @@
 import {PoolData, Api} from './types'
+import { IncomingCallData } from './IncomingCallDataMapper'
 
 export function getApi(): Api {
   return {
@@ -70,5 +71,13 @@ export function getTestPoolWithDuplicateNumbers(): PoolData {
         address: 'The Street'
       }
     ]
+  }
+}
+export function getIncomingCallData(from: string, called: string, numbersPreviouslyCalled: string[], dialStatus: string): IncomingCallData {
+  return {
+    from: from,
+    called: called,
+    numbersPreviouslyCalled: numbersPreviouslyCalled,
+    dialStatus: dialStatus
   }
 }

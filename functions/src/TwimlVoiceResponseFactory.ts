@@ -8,10 +8,12 @@ import {UrlBuilder} from './HttpRequestUtil'
 export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
   private readonly pool: Pool
   private readonly incomingCallData: IncomingCallData
+  private readonly urlBuilder: UrlBuilder
 
-  constructor(pool: Pool, incomingCallData: IncomingCallData) {
+  constructor(pool: Pool, incomingCallData: IncomingCallData, urlBuilder: UrlBuilder) {
     this.pool = pool
     this.incomingCallData = incomingCallData
+    this.urlBuilder = urlBuilder
   }
 
   private emptyResponse() {
@@ -38,13 +40,10 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
     return twiml
   }
 
-  createNextResponse(
-    previoulyCalledNumbers: string[],
-    urlBuilder: UrlBuilder
-  ): string {
+  createNextResponse(): string {
     let twiml = new twilio.twiml.VoiceResponse()
     const person: Person | undefined = this.pool.getNextPerson(
-      previoulyCalledNumbers,
+      this.incomingCallData.numbersPreviouslyCalled,
       this.incomingCallData.from
     )
     if (!this.shouldTryNext(this.incomingCallData.dialStatus)) {
@@ -60,7 +59,7 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
     }
 
     const messages = this.pool.getBespokeMessagesForPerson(person)
-    if (previoulyCalledNumbers.length === 0) {
+    if (this.incomingCallData.numbersPreviouslyCalled.length === 0) {
       console.log(
         'No previous used numbers, this is the first person in the pool'
       )
@@ -76,7 +75,7 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
       twiml = this.dial(
         {
           to: person.number,
-          actionUrl: urlBuilder.getNextActionUrl(person.number)
+          actionUrl: this.urlBuilder.getNextActionUrl(person.number)
         },
         twiml
       )
@@ -93,7 +92,7 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
     twiml = this.dial(
       {
         to: person.number,
-        actionUrl: urlBuilder.getNextActionUrl(person.number)
+        actionUrl: this.urlBuilder.getNextActionUrl(person.number)
       },
       twiml
     )

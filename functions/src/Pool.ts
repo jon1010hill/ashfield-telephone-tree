@@ -43,7 +43,7 @@ export class Pool {
     return this.data.ringTimeout
   }
 
-  getInboudNumber(): string {
+  getInboundNumber(): string {
     return this.data.number
   }
 
