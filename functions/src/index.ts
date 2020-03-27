@@ -1,52 +1,39 @@
-import * as express from 'express'
-import * as twilio from 'twilio'
+import express from 'express'
+import * as bodyParser from 'body-parser'
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-const db = require('./data.json') // todo, can we do better: import? types?
-const pool = db.pool
+import {BeginCallSequence} from './command/types'
+import {HttpRequestUtil} from './HttpRequestUtil'
+import {SERVICE_LOCATOR} from './types'
+import {IncomingCallData} from './IncomingCallDataMapper'
 const REGION = 'europe-west1'
 const app = express()
+app.use(bodyParser.json())
 admin.initializeApp()
-/*
-TODO
-play a message before answer to the Receiver  (I think we use the URL element in Dial to send the receiver to some twiml)
-Pool functions for randomising
-Query string or dial parameters to hold used number states
-deal with DialStatus states
-SMS: IN / OUT
-Deploy to firebase
-*/
-app.post('/voice', (_req, resp) => {
-  const twiml = new twilio.twiml.VoiceResponse()
 
-  const options = {
-    timeout: pool.ringTimeout,
-    timeLimit: pool.maxCallDuration
-
-    // todo twilio dialer client errors with bad callerId, why? sip?
-    // todo action: NO_ANSWER
-    // todo we need to handle DialCallStatus
-  }
-
-  // todo round robin random select
-  var personDetails = pool.people[0]
-
-  var tvars = {
-    person: personDetails.name,
-    street: pool.street
-  }
-
-  const fillTemplate = function(templateString: string, templateVars: any){
-    return new Function(`return \`${templateString}\`;`).call(templateVars);
-  }
-
-  twiml.say({voice: pool.voice}, fillTemplate(pool.messages.intro, tvars)) // todo variable substitution
-
-  twiml.dial(options, pool.people[0].number)
-
+/**
+ * General purpose endpoint for receiving twilio voice webhooks
+ */
+app.post('/voice', (req: express.Request, resp: express.Response) => {
+  console.log('Received POST request from Twilio')
   resp.header('Content-Type', 'text/xml')
-  resp.send(twiml.toString())
-  resp.status(200)
+  const httpUtil = new HttpRequestUtil(req)
+  console.log(`URL Called: ${httpUtil.getCurrentUrl()}`)
+
+  const numbersPreviouslyCalled: string[] = httpUtil.parseQueryStringToArray()
+
+  const incomingCallData: IncomingCallData = SERVICE_LOCATOR.TwimlIncomingCallDataMapper.fromUnknownToIncomingCallData(
+    req.body,
+    numbersPreviouslyCalled
+  ) // can throw Exception
+
+  const command: BeginCallSequence = {
+    createdAt: new Date(),
+    data: incomingCallData
+  }
+  resp
+    .status(200)
+    .send(SERVICE_LOCATOR.getCallHandler(httpUtil).incomingVoiceCall(command))
 })
 
 exports.ashfield = functions.region(REGION).https.onRequest(app)
