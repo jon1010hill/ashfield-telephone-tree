@@ -1,5 +1,5 @@
 import {PoolData, Api} from './types'
-import { IncomingCallData } from './IncomingCallDataMapper'
+import {IncomingCallData} from './IncomingCallDataMapper'
 
 export function getApi(): Api {
   return {
@@ -11,16 +11,17 @@ export function getTestPool(
   callerNumber?: string
 ): PoolData {
   return {
-    ringTimeout: 8,
+    ringTimeout: 6,
     maxCallDuration: 600,
     communityName: communityName ? communityName : 'Smith Street',
     number: callerNumber ? callerNumber : '+44xxxxxxxxxx',
-    voice: 'Poly.Brian',
-    screen: 'You are about to receive a call',
+
     messages: {
       intro:
         'Hello. You have reached {NAME} community line. We will try to connect you to {PERSON} on {STREET}}',
-      next: 'We are now trying to connect you to {PERSON} on {STREET}'
+      next: 'We are now trying to connect you to {PERSON} on {STREET}',
+      screen: 'You are about to receive a call',
+      voice: 'Poly.Brian'
     },
     people: [
       {
@@ -43,16 +44,17 @@ export function getTestPool(
 }
 export function getTestPoolWithDuplicateNumbers(): PoolData {
   return {
-    ringTimeout: 8,
+    ringTimeout: 7,
     maxCallDuration: 600,
     communityName: 'Smith Street',
     number: '+44xxxxxxxxxx',
-    voice: 'Poly.Brian',
-    screen: 'You are about to receive a call',
+
     messages: {
       intro:
         'Hello. You have reached {NAME} community line. We will try to connect you to {PERSON} on {STREET}}',
-      next: 'We are now trying to connect you to {PERSON} on {STREET}'
+      next: 'We are now trying to connect you to {PERSON} on {STREET}',
+      voice: 'Poly.Brian',
+      screen: 'You are about to receive a call'
     },
     people: [
       {
@@ -73,11 +75,16 @@ export function getTestPoolWithDuplicateNumbers(): PoolData {
     ]
   }
 }
-export function getIncomingCallData(from: string, called: string, numbersPreviouslyCalled: string[], dialStatus: string): IncomingCallData {
+export function getIncomingCallData(
+  from: string,
+  called: string,
+  numbersPreviouslyCalled: string[],
+  dialStatus: string
+): IncomingCallData {
   return {
-    from: from,
-    called: called,
-    numbersPreviouslyCalled: numbersPreviouslyCalled,
-    dialStatus: dialStatus
+    from,
+    called,
+    numbersPreviouslyCalled,
+    dialStatus
   }
 }

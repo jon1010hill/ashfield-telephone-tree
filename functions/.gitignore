@@ -2,7 +2,6 @@
 **/*.js
 **/*.js.map
 src/data/
-src/data/
 # Typescript v1 declaration files
 lib/
 typings/

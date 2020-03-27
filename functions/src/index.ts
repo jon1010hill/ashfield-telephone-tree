@@ -14,7 +14,7 @@ admin.initializeApp()
 /**
  * General purpose endpoint for receiving twilio voice webhooks
  */
-app.post('/voice', (req: express.Request, resp: express.Response) => {
+app.post('/voice', async (req: express.Request, resp: express.Response) => {
   console.log('Received POST request from Twilio')
   resp.header('Content-Type', 'text/xml')
   const httpUtil = new HttpRequestUtil(req)
@@ -33,7 +33,9 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
   }
   resp
     .status(200)
-    .send(SERVICE_LOCATOR.getCallHandler(httpUtil).incomingVoiceCall(command))
+    .send(
+      await SERVICE_LOCATOR.getCallHandler(httpUtil).incomingVoiceCall(command)
+    )
 })
 
 exports.ashfield = functions.region(REGION).https.onRequest(app)
