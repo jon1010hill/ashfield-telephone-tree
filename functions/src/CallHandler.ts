@@ -14,11 +14,8 @@ export class CallHandler {
     console.log('handle incomingVoiceCall', command)
     const pool: Pool = this.poolRepo.findByNumberCalled(command.data.called)
 
-    const factory = new TwimlVoiceResponseFactory(pool, command.data)
-    const response = factory.createNextResponse(
-      command.data.numbersPreviouslyCalled,
-      this.urlBuilder
-    )
+    const factory = new TwimlVoiceResponseFactory(pool, command.data, this.urlBuilder)
+    const response = factory.createNextResponse()
     console.log('Response: ', response)
     return response
   }

@@ -22,6 +22,6 @@ describe('PoolRepository tests', () => {
     const pool: Pool = repo.findByNumberCalled('01234')
     chai.expect(pool).to.not.be.undefined
     chai.expect(pool.getCommunityName()).to.equal('Project A')
-    chai.expect(pool.getInboudNumber()).to.equal('01234')
+    chai.expect(pool.getInboundNumber()).to.equal('01234')
   })
 })
