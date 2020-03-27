@@ -12,7 +12,7 @@ import {JSONFilePoolRepository} from './JSONFilePoolRepository'
 import {getTestPool, getApi} from './Mother.test'
 import {CallHandler} from './CallHandler'
 import {BeginCallSequence} from './command/types'
-
+import xmlParser from 'xml-parser'
 const expect = chai.expect
 
 const request = mockReq({
@@ -42,6 +42,9 @@ describe('CallHandler service tests', () => {
       }
     }
     const response = callHandler.incomingVoiceCall(command)
+    const result = xmlParser(response)
+
     expect(response).xml.to.be.valid()
+    expect(result.root.name).to.equal('Response')
   })
 })
