@@ -10,7 +10,11 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
   private readonly incomingCallData: IncomingCallData
   private readonly urlBuilder: UrlBuilder
 
-  constructor(pool: Pool, incomingCallData: IncomingCallData, urlBuilder: UrlBuilder) {
+  constructor(
+    pool: Pool,
+    incomingCallData: IncomingCallData,
+    urlBuilder: UrlBuilder
+  ) {
     this.pool = pool
     this.incomingCallData = incomingCallData
     this.urlBuilder = urlBuilder
@@ -59,6 +63,8 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
     }
 
     const messages = this.pool.getBespokeMessagesForPerson(person)
+    const actionUrl = this.urlBuilder.getNextActionUrl(person.number)
+    console.log(`Action URL: ${actionUrl}`)
     if (this.incomingCallData.numbersPreviouslyCalled.length === 0) {
       console.log(
         'No previous used numbers, this is the first person in the pool'
@@ -74,8 +80,8 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
       //
       twiml = this.dial(
         {
-          to: person.number,
-          actionUrl: this.urlBuilder.getNextActionUrl(person.number)
+          actionUrl,
+          to: person.number
         },
         twiml
       )
@@ -91,8 +97,8 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
     )
     twiml = this.dial(
       {
-        to: person.number,
-        actionUrl: this.urlBuilder.getNextActionUrl(person.number)
+        actionUrl,
+        to: person.number
       },
       twiml
     )

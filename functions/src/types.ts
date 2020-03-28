@@ -11,6 +11,7 @@ export const DEFAULT_MAX_CALL_LENGTH = 600
 
 export type Api = {
   baseUri: string
+  dbUrl: string
 }
 
 export type Person = {
@@ -37,7 +38,7 @@ export type PoolData = {
 
 export type AppData = {api: Api; pools: PoolData[]}
 export const APP_DATA: typeof db = db
-export const API_DATA: typeof db.api = db.api
+export const API_DATA: typeof db.api = db.api // todo load this to firebase config instead
 
 export const SERVICE_LOCATOR = {
   get IPoolRepository() {
