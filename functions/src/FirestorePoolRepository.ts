@@ -12,6 +12,8 @@ export class FirestorePoolRepository implements IPoolRepository {
     this.col = this.db.collection('Pool')
   }
 
+  // todo add a findByNumberCalledOrThrow
+
   async findByNumberCalled(calledNumber: string): Promise<Pool> {
     const queryRef = this.col.where('number', '==', calledNumber)
     const snapshot: admin.firestore.QuerySnapshot = await queryRef.get()
@@ -24,6 +26,7 @@ export class FirestorePoolRepository implements IPoolRepository {
     const snap: admin.firestore.DocumentSnapshot = snapshot.docs[0]
     const data = snap.data()
 
+    // TODO validate PoolData
     return new Pool(data as PoolData, snap.id)
   }
 
@@ -35,8 +38,7 @@ export class FirestorePoolRepository implements IPoolRepository {
     const firestoreDoc = toFirestore({
       ...entity,
       createdAt: now,
-      updatedAt: now,
-      version: 0
+      updatedAt: now
     })
 
     await this.col.doc().create(firestoreDoc)

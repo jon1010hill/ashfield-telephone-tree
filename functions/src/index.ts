@@ -6,19 +6,11 @@ import {BeginCallSequence} from './command/types'
 import {HttpRequestUtil} from './HttpRequestUtil'
 import {SERVICE_LOCATOR} from './types'
 import {IncomingCallData} from './IncomingCallDataMapper'
-import {FirestorePoolRepository} from './FirestorePoolRepository'
-import {PoolDataLoader} from './PoolDataLoader'
 const REGION = 'europe-west2'
 const app = express()
 app.use(bodyParser.json())
 admin.initializeApp()
 
-app.get('/admin', async (_req: express.Request, resp: express.Response) => {
-  await new PoolDataLoader().loadSample(
-    new FirestorePoolRepository(admin.firestore())
-  )
-  resp.status(200).send('OK')
-})
 /**
  * General purpose endpoint for receiving twilio voice webhooks
  */
