@@ -8,9 +8,15 @@ import {
 // TODO consistent nomenclature
 export class Pool {
   private data: PoolData
+  private id?: string
 
-  constructor(data: PoolData) {
+  constructor(data: PoolData, id?: string) {
     this.data = data
+    this.id = id
+  }
+
+  getId() {
+    return this.id
   }
 
   getCommunityName(): string {

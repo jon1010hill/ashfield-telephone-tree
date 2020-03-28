@@ -7,15 +7,7 @@ export class PoolDataLoader {
   async loadFromJson(repo: FirestorePoolRepository) {
     const pools: PoolData[] = db.pools
     for await (const pool of pools) {
-      try {
-        const persisted = await repo.findByNumberCalled(pool.number)
-        if (persisted) {
-          continue
-        }
-      } catch (e) {
-        const p: Pool = new Pool(pool)
-        await repo.create(p.getData())
-      }
+      await repo.updateOrCreate(pool)
     }
   }
   async loadSample(repo: FirestorePoolRepository) {
