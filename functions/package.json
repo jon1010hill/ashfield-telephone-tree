@@ -8,7 +8,8 @@
     "start": "yarn shell",
     "deploy": "yarn build && firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "yarn build && yarn nyc mocha -r tsconfig-paths/register -r ts-node/register -r source-map-support/register src/*.test.ts --timeout 10000 --bail"
+    "test": "yarn lint && yarn build && yarn nyc mocha -r tsconfig-paths/register -r ts-node/register -r source-map-support/register src/*.test.ts --timeout 10000 --bail",
+    "loadData": "yarn build && cp ./serviceAccountKey.json lib/ && node ./lib/loadData.js"
   },
   "engines": {
     "node": "10"
@@ -16,10 +17,13 @@
   "main": "lib/index.js",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "chalk": "^3.0.0",
     "cors": "^2.8.5",
     "express": "4.17.1",
     "firebase-admin": "^8.6.0",
     "firebase-functions": "^3.3.0",
+    "google-libphonenumber": "^3.2.8",
+    "readline-promise": "^1.0.4",
     "twilio": "3.40.0"
   },
   "devDependencies": {
@@ -36,7 +40,6 @@
     "chai-as-promised": "7.1.1",
     "chai-xml": "^0.3.2",
     "firebase-functions-test": "^0.1.6",
-    "google-libphonenumber": "3.2.8",
     "mocha": "7.1.1",
     "nyc": "^15.0.0",
     "prettier": "1.19.1",

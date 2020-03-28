@@ -19,9 +19,9 @@ const convert = (value: any): FirestoreValue | undefined => {
     case 'symbol':
       return {}
     case 'object':
-      if (value instanceof Date)
+      if (value instanceof Date) {
         return admin.firestore.Timestamp.fromDate(value)
-
+      }
       // map over arrays, convert dont drop elemets
       if (Array.isArray(value)) {
         return value.map(v => convert(v)).filter(e => e !== undefined)

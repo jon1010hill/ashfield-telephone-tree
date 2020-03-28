@@ -67,7 +67,7 @@ export class Pool {
     return filtered[Math.floor(Math.random() * filtered.length)]
   }
 
-  getData() {
+  getData(): PoolData {
     return {
       ...this.data
     }

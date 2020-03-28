@@ -1,13 +1,10 @@
-import * as db from './data/data.json' // todo source this from URL
+import * as db from './data/data.json'
 import {IncomingCallDataMapper} from './IncomingCallDataMapper'
 import {TwimlIncomingCallDataMapper} from './TwimlncomingCallDataMapper'
 import {CallHandler} from './CallHandler'
 import {UrlBuilder} from './HttpRequestUtil'
 import * as admin from 'firebase-admin'
 import {FirestorePoolRepository} from './FirestorePoolRepository'
-
-export type Writeable<T> = {-readonly [P in keyof T]: T[P]}
-// build types from sample data
 
 export const DEFAULT_RING_TIMEOUT = 5
 export const DEFAULT_MAX_CALL_LENGTH = 600
