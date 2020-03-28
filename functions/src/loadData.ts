@@ -6,7 +6,7 @@ const serviceAccount = require('./serviceAccountKey.json')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: API_DATA.dbUrl
+  databaseURL: API_DATA.dbUri
 })
 const dataLoader = new PoolDataLoader()
 async function loadFromJson() {

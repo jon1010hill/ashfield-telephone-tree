@@ -11,7 +11,7 @@ export const DEFAULT_MAX_CALL_LENGTH = 600
 
 export type Api = {
   baseUri: string
-  dbUrl: string
+  dbUri: string
 }
 
 export type Person = {

@@ -1,6 +1,7 @@
 {
   "api": {
-    "baseUri": "https://functions"
+    "baseUri": "https://functions",
+    "dbUri": "http://db"
   },
   "pools": [
     {

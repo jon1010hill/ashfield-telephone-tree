@@ -4,7 +4,7 @@ import {IncomingCallData} from './IncomingCallDataMapper'
 export function getApi(): Api {
   return {
     baseUri: 'http://localhost',
-    dbUrl: 'http://localhost'
+    dbUri: 'http://localhost'
   }
 }
 export function getTestPool(
