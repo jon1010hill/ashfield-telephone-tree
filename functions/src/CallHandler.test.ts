@@ -24,7 +24,7 @@ const request = mockReq({
   }
 })
 describe('CallHandler service tests', () => {
-  it('test no previous numbers called and no dialStatus returns ...', () => {
+  it('test no previous numbers called and no dialStatus returns ...', async () => {
     const api: Api = getApi()
     const pool: PoolData = getTestPool('Project A', '01234')
 
@@ -41,7 +41,7 @@ describe('CallHandler service tests', () => {
         numbersPreviouslyCalled: []
       }
     }
-    const response = callHandler.incomingVoiceCall(command)
+    const response = await callHandler.incomingVoiceCall(command)
     const result = xmlParser(response)
 
     expect(response).xml.to.be.valid()

@@ -14,7 +14,7 @@ export class JSONFilePoolRepository implements IPoolRepository {
     this.db = JSON.parse(JSON.stringify(appData))
   }
 
-  findByNumberCalled(numberCalled: string): Pool {
+  async findByNumberCalled(numberCalled: string): Promise<Pool> {
     const poolData: PoolData[] = this.db.pools.filter(
       pool => pool.number === numberCalled
     )

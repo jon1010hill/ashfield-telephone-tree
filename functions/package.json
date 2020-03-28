@@ -1,14 +1,16 @@
 {
   "name": "functions",
   "scripts": {
+    "clean": "rm -rf lib",
     "lint": "tslint --project tsconfig.json",
     "build": "tsc && cp ./src/data/data.json lib/data/",
     "serve": "yarn build && firebase emulators:start --only functions",
     "shell": "yarn build && firebase functions:shell",
     "start": "yarn shell",
-    "deploy": "yarn build && firebase deploy --only functions",
+    "deploy": "yarn clean && yarn build && firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "yarn build && yarn nyc mocha -r tsconfig-paths/register -r ts-node/register -r source-map-support/register src/*.test.ts --timeout 10000 --bail"
+    "test": "yarn lint && yarn build && yarn nyc mocha -r tsconfig-paths/register -r ts-node/register -r source-map-support/register src/*.test.ts --timeout 10000 --bail",
+    "loadData": "yarn build && cp ./serviceAccountKey.json lib/ && node ./lib/loadData.js"
   },
   "engines": {
     "node": "10"
@@ -16,10 +18,13 @@
   "main": "lib/index.js",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "chalk": "^3.0.0",
     "cors": "^2.8.5",
     "express": "4.17.1",
     "firebase-admin": "^8.6.0",
     "firebase-functions": "^3.3.0",
+    "google-libphonenumber": "^3.2.8",
+    "readline-promise": "^1.0.4",
     "twilio": "3.40.0"
   },
   "devDependencies": {
@@ -36,16 +41,15 @@
     "chai-as-promised": "7.1.1",
     "chai-xml": "^0.3.2",
     "firebase-functions-test": "^0.1.6",
-    "google-libphonenumber": "3.2.8",
     "mocha": "7.1.1",
     "nyc": "^15.0.0",
     "prettier": "1.19.1",
     "sinon": "9.0.1",
     "sinon-chai": "3.5.0",
     "sinon-express-mock": "2.2.1",
-    "ts-sinon": "1.0.25",
     "source-map-support": "0.5.16",
     "ts-node": "8.7.0",
+    "ts-sinon": "1.0.25",
     "tsconfig-paths": "3.9.0",
     "tslint": "6.1.0",
     "tslint-config-airbnb": "5.11.2",

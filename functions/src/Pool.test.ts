@@ -2,7 +2,7 @@ import * as chai from 'chai'
 import 'mocha'
 import {PoolData} from './types'
 import {getTestPool, getTestPoolWithDuplicateNumbers} from './Mother.test'
-import {Pool} from './Pool'
+import {Pool, PoolBuilder} from './Pool'
 
 const expect = chai.expect
 
@@ -55,5 +55,23 @@ describe('Pool tests', () => {
       number: '2',
       address: 'The Road'
     })
+  })
+
+  it('test builder', () => {
+    const builder: PoolBuilder = new PoolBuilder()
+    const pool: Pool = builder
+      .withNumber('+447766999999')
+      .withCommunityName('Our Community')
+      .withMessages({
+        intro: 'Intro',
+        next: 'Next',
+        voice: 'man',
+        screen: 'Screen'
+      })
+      .withPeople([
+        {address: 'The Street', name: 'John', number: '+447766111111'}
+      ])
+      .build()
+    expect(pool).to.be.instanceOf(Pool)
   })
 })

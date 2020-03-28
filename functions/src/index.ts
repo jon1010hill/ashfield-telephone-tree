@@ -6,7 +6,7 @@ import {BeginCallSequence} from './command/types'
 import {HttpRequestUtil} from './HttpRequestUtil'
 import {SERVICE_LOCATOR} from './types'
 import {IncomingCallData} from './IncomingCallDataMapper'
-const REGION = 'europe-west1'
+const REGION = 'europe-west2'
 const app = express()
 app.use(bodyParser.json())
 admin.initializeApp()
@@ -14,7 +14,7 @@ admin.initializeApp()
 /**
  * General purpose endpoint for receiving twilio voice webhooks
  */
-app.post('/voice', (req: express.Request, resp: express.Response) => {
+app.post('/voice', async (req: express.Request, resp: express.Response) => {
   console.log('Received POST request from Twilio')
   resp.header('Content-Type', 'text/xml')
   const httpUtil = new HttpRequestUtil(req)
@@ -33,7 +33,9 @@ app.post('/voice', (req: express.Request, resp: express.Response) => {
   }
   resp
     .status(200)
-    .send(SERVICE_LOCATOR.getCallHandler(httpUtil).incomingVoiceCall(command))
+    .send(
+      await SERVICE_LOCATOR.getCallHandler(httpUtil).incomingVoiceCall(command)
+    )
 })
 
 exports.ashfield = functions.region(REGION).https.onRequest(app)
