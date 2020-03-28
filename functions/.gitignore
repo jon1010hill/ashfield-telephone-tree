@@ -1,5 +1,5 @@
 ## Compiled JavaScript files
-./serviceAccountKey.json
+serviceAccountKey.json
 **/*.js
 **/*.js.map
 src/data/
