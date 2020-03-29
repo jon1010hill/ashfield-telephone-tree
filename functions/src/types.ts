@@ -5,9 +5,12 @@ import {CallHandler} from './CallHandler'
 import {UrlBuilder} from './HttpRequestUtil'
 import * as admin from 'firebase-admin'
 import {FirestorePoolRepository} from './FirestorePoolRepository'
+import {JSONFilePoolRepository} from './JSONFilePoolRepository'
 
 export const DEFAULT_RING_TIMEOUT = 5
 export const DEFAULT_MAX_CALL_LENGTH = 600
+export const NO_ONE_LEFT_IN_POOL_MSG =
+  'There is currently nobody available to take your call, please try us again in a few minutes'
 
 export type Api = {
   baseUri: string
@@ -45,7 +48,9 @@ export const SERVICE_LOCATOR = {
     return new FirestorePoolRepository(admin.firestore())
   },
   getCallHandler(urlBuilder: UrlBuilder) {
-    // todo review
+    if (process.env.FUNCTIONS_EMULATOR) {
+      return new CallHandler(new JSONFilePoolRepository(APP_DATA), urlBuilder)
+    }
     return new CallHandler(this.IPoolRepository, urlBuilder)
   },
   get IncomingCallDataMapper() {
