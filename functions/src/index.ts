@@ -10,6 +10,7 @@ const REGION = 'europe-west2'
 const app = express()
 app.use(bodyParser.json())
 admin.initializeApp()
+console.log(process.env)
 
 /**
  * General purpose endpoint for receiving twilio voice webhooks

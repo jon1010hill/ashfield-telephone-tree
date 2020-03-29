@@ -2,7 +2,7 @@ import {Pool} from './Pool'
 import {IVoiceResponseFactory, SayData, DialData} from './IVoiceResponseFactory'
 import * as twilio from 'twilio'
 import VoiceResponse from 'twilio/lib/twiml/VoiceResponse'
-import {Person} from './types'
+import {Person, NO_ONE_LEFT_IN_POOL_MSG} from './types'
 import {IncomingCallData} from './IncomingCallDataMapper'
 import {UrlBuilder} from './HttpRequestUtil'
 export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
@@ -59,7 +59,13 @@ export class TwimlVoiceResponseFactory implements IVoiceResponseFactory {
 
     if (!person) {
       console.log('No more people left in pool')
-      return this.emptyResponse().toString()
+      return this.say(
+        {
+          message: NO_ONE_LEFT_IN_POOL_MSG,
+          to: this.incomingCallData.from
+        },
+        twiml
+      ).toString()
     }
 
     const messages = this.pool.getBespokeMessagesForPerson(person)
